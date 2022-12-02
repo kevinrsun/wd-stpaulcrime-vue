@@ -3,17 +3,21 @@
   "version": "1.0.0",
   "description": "RESTful Web Server and Single Page Application",
   "author": {
-    "name": "",
-    "email": ""
+    "name": "Jack Landwer",
+    "email": "land7738@stthomas.edu"
   },
   "contributors": [
     {
-      "name": "",
-      "email": ""
+      "name": "Jack Landwer",
+      "email": "land7738@stthomas.edu"
     },
     {
-      "name": "",
-      "email": ""
+      "name": "Kevin Sun",
+      "email": "sun02840@stthomas.edu"
+    },
+    {
+      "name": "Sam McEnery",
+      "email": "sammc40c@gmail.com"
     }
   ],
   "repository": {

@@ -1,5 +1,6 @@
 <script>
 import $ from 'jquery'
+import crimesResult from './components/crimesResult.vue'
 
 export default {
     data() {
@@ -42,6 +43,9 @@ export default {
             }
         };
     },
+    components: {
+        crimesResult
+    },
     methods: {
         viewMap(event) {
             this.view = 'map';
@@ -55,7 +59,7 @@ export default {
             this.view = 'about';
         },
 
-        getJSON(url) {
+        getJSON(url) { //Should use this to get the data??? 
             return new Promise((resolve, reject) => {
                 $.ajax({
                     dataType: 'json',
@@ -70,7 +74,7 @@ export default {
             });
         },
 
-        uploadJSON(method, url, data) {
+        uploadJSON(method, url, data) { //should use this for the new incident input
             return new Promise((resolve, reject) => {
                 $.ajax({
                     type: method,
@@ -88,14 +92,36 @@ export default {
             });
         },
 
-        filterCrimes() {
+        filterCrimes(data) {
             //take the input from the filters and apply them to the data...
+            //construct a url to pass to getJSON??
+            if(this.codes !== ''){ //Add the codes into the codes array??
+
+            }
+            if(this.neighborhoods !== ''){ //Add neighborhoods to neighborhoods array??
+
+            }
+            if(this.incidents !== ''){ //Add incidents to incidents array??
+
+            }
 
 
         },
 
-        newIncident(){
+        newLocation(data){
+            //Take the address or lat/long and update the map for new location...
+            if(this.leaflet.center.address !== ''){
+
+            } else if(this.leaflet.center.lat !== '' && this.leaflet.center.long !== ''){
+
+            }
+
+        },
+
+        newIncident(data){
             //put together the data for the new incident then pass as json??? 
+
+            //Check if any of the inputs are null/empty
 
 
         }
@@ -151,7 +177,8 @@ export default {
                     <input type="text" id="lat" style="width: 400px; display: inline-block"> &nbsp;
                     <!-- should lat/long be 1 or 2 input boxes??? -->
                     <label for="long" style="display: inline-block">Long:</label> &nbsp;
-                    <input type="text" id="long" style="width:400px; display: inline-block"> <br>
+                    <input type="text" id="long" style="width:400px; display: inline-block"> &nbsp; &nbsp;
+                    <button type="button" id="go-button" @click="newLocation" style="border: 1px solid black; padding: 10px; background-color: #30cf3d; font-weight: bold; padding: 10px">Go</button>
                 </div>
 
 
@@ -246,12 +273,10 @@ export default {
 
 
                 <!-- Will want to build a table here to show the crimes like project 3 did, but using the way spotify-starter does -->
-                <!-- think about how to do this/start setting it up.-->
-                <p>table for incidents should be populated down here </p>
+                <crimesResult :result_array="incidents"/>
 
 
-
-
+                <br><br>
             </div>
         </div>
     </div>
@@ -269,8 +294,11 @@ export default {
                     <label for="case-number" style="display: inline-block">Case Number:</label> &nbsp;
                     <input type="text" id="case-number" style="width: 300px; display: inline-block"> <br>
 
-                    <label for="date-time" style="display: inline-block">Date-Time:</label> &nbsp;
-                    <input type="text" id="date-time" style="width: 300px; display: inline-block"> <br> <!-- show the correct format as faded text in box -->
+                    <label for="date" style="display: inline-block">Date:</label> &nbsp; 
+                    <input type="text" id="date" style="width: 300px; display: inline-block"> <br> <!-- show the correct format as faded text in box?? -->
+
+                    <label for="time" style="display: inline-block">Time:</label> &nbsp; 
+                    <input type="text" id="time" style="width: 300px; display: inline-block"> <br> <!-- show the correct format as faded text in box?? -->
 
                     <label for="incident-code" style="display: inline-block">Code:</label> &nbsp;
                     <input type="text" id="incident-code" style="width: 300px; display: inline-block"> <br>

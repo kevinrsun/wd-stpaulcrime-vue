@@ -1,6 +1,6 @@
 <script>
 import $ from 'jquery'
-import crimesResult from './components/crimesResult.vue'
+import CrimesResult from './components/CrimesResult.vue'
 
 export default {
     data() {
@@ -44,7 +44,7 @@ export default {
         };
     },
     components: {
-        crimesResult
+        CrimesResult
     },
     methods: {
         viewMap(event) {
@@ -59,7 +59,7 @@ export default {
             this.view = 'about';
         },
 
-        getJSON(url) { //Should use this to get the data??? 
+        getJSON(url) {
             return new Promise((resolve, reject) => {
                 $.ajax({
                     dataType: 'json',
@@ -105,7 +105,15 @@ export default {
 
             }
 
-
+            // Hitting Submit button for filter triggers API request
+            this.getJSON("http://localhost:8000/incidents")
+            .then((data) => {
+                this.incidents = data;
+            })
+            .then((err) => {
+                console.log(err);
+            });
+            
         },
 
         newLocation(data){
@@ -160,6 +168,8 @@ export default {
             <p :class="'cell small-4 ' + ((view === 'about') ? 'selected' : 'unselected')" @click="viewAbout">About</p>
         </div>
     </div>
+
+    <!-- MAP PAGE VIEW -->
     <div v-show="view === 'map'">
         <div class="grid-container">
             <div class="grid-x grid-padding-x">
@@ -273,13 +283,15 @@ export default {
 
 
                 <!-- Will want to build a table here to show the crimes like project 3 did, but using the way spotify-starter does -->
-                <crimesResult :result_array="incidents"/>
+                <CrimesResult :result_array="incidents"/>
 
 
                 <br><br>
             </div>
         </div>
     </div>
+
+    <!-- NEW INCIDENT PAGE VIEW -->
     <div v-if="view === 'new_incident'">
         <!-- Replace this with your actual form: can be done here or by making a new component -->
         <div class="grid-container">
@@ -326,6 +338,8 @@ export default {
             </div>
         </div>
     </div>
+
+    <!-- ABOUT PAGE VIEW -->
     <div v-if="view === 'about'">
         <!-- Replace this with your actual about the project content: can be done here or by making a new component -->
         <div class="grid-container">
@@ -338,7 +352,8 @@ export default {
                 <div class="cell large-4" style="border: 1px solid black">
                     <p style="font-size: 25px; margin: auto; text-align: center;">Jack Landwer</p>
                     <!-- photo and short bio-->
-                    <img src="images/jackPic.jpeg" alt="Jack" style="width: 250px">
+                    <!-- This can be on the API and we get using a request url -->
+                    <!-- <img src="images/jackPic.jpeg" alt="Jack" style="width: 250px"> --> 
                     <p>Senior at St. Thomas majoring in Computer Science. In my free time I like to snowboard, golf, and
                         play soccer.</p>
 
@@ -347,14 +362,16 @@ export default {
                 <div class="cell large-4" style="border: 1px solid black">
                     <p style="font-size: 25px; margin: auto; text-align: center;">Kevin</p>
                     <!-- photo and short bio-->
-                    <img src="images/" alt="Kevin" style="width: 250px">
+                    <!-- This can be on the API and we get using a request url -->
+                    <!-- <img src="images/" alt="Kevin" style="width: 250px"> -->
 
                 </div>
 
                 <div class="cell large-4" style="border: 1px solid black">
                     <p style="font-size: 25px; margin: auto; text-align: center;">Sam</p>
                     <!-- photo and short bio-->
-                    <img src="images/" alt="Sam" style="width: 250px">
+                    <!-- This can be on the API and we get using a request url -->
+                    <!-- <img src="images/" alt="Sam" style="width: 250px"> -->
 
                 </div>
 

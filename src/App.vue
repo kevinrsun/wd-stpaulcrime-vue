@@ -507,15 +507,16 @@ export default {
                     <!-- photo and short bio-->
                     <!-- This can be on the API and we get using a request url -->
                     <!-- <img src="images/" alt="Kevin" style="width: 250px"> -->
+                    <p>fkadhjbfgkahsdbgfkjhasbfkhabsfkjhbas</p>
 
                 </div>
 
                 <div class="cell large-4" style="border: 1px solid black">
-                    <p style="font-size: 25px; margin: auto; text-align: center;">Sam</p>
+                    <p style="font-size: 25px; margin: auto; text-align: center;">Sam McEnery</p>
                     <!-- photo and short bio-->
                     <!-- This can be on the API and we get using a request url -->
                     <!-- <img src="images/" alt="Sam" style="width: 250px"> -->
-
+                    <p>sdojghbnsdjlgbljsdbglsdjgbsdljgblj.</p>
                 </div>
 
                 <!-- maybe add some horizontal lines to separate the sections??-->
@@ -534,6 +535,7 @@ export default {
 
                 <h1 class="cell large-12" style="font-size: 40px">Six interesting findings that you discovered using
                     your application:</h1>
+                    <p>I learned everything</p>
                 <div class="cell large-12">
 
                 </div>

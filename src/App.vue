@@ -14,8 +14,9 @@ export default {
             filterDates: [],
             filterTimes: [],
             filterMaxIncidents: 1000,
-            selectIncidentAddress: [],
-            selectIncidentLatLong: [],
+            selectIncidentAddress: '',
+            selectIncidentLat: '',
+            selectIncidentLong: '',
             leaflet: {
                 map: null,
                 center: {
@@ -163,10 +164,6 @@ export default {
                 }
             }
             if (this.filterDates.length > 0) { //check for date filters
-                console.log(this.filterDates[0]);
-                console.log(this.filterDates[1]);
-                console.log(this.filterTimes[0]);
-                console.log(this.filterTimes[1]);
                 if (query !== "") {
                     if (this.filterDates[0]) {
                         query = query + "&start_date=" + this.filterDates[0];
@@ -277,12 +274,38 @@ export default {
             console.log(case_number);
             //when have the case number, loop through the cases and get the lat/long for the case for the case number
 
+            let cnAddress = '';
+            let cnLat = '';
+            let cnLong = '';
+
+            if(this.selectIncidentAddress !== 0){
+
+            }
+            if(this.selectIncidentLat !== ''){
+
+            }
+            if(this.selectIncidentLong !== ''){
+
+            }
+
             for (let i = 0; i < this.codes.length; i++) {
                 if (case_number == this.codes[i].code) {
                     //set lat/long to variable
+                    cnAddress = this.codes[i].address;
+                    cnLat = this.codes[i].lat;
+                    cnLong = this.codes[i].long;
+                    //Should I just break out right here..??
                 }
             }
             //Want to drop a pin on the location and set the view on it
+            this.leaflet.center.lat = cnLat;
+            this.leaflet.center.lng = cnLong;
+            this.leaflet.center.address = cnAddress;
+
+            this.leaflet.map = L.map('leafletmap').setView([this.leaflet.center.lat, this.leaflet.center.lng], this.leaflet.zoom);
+
+            //drop the pin on the incident location. New marker color, has popup with date, time, incident, and delete button. REPLACE X's in address #
+             
 
 
         },
@@ -345,11 +368,11 @@ export default {
                         style="width: 400px; display: inline-block" /> <br>
                     <!-- try to use a auto-filling one?? -->
                     <label for="lat" style="display: inline-block">Lat:</label> &nbsp;
-                    <input type="text" id="lat" v-model="selectIncidentLatLong"
+                    <input type="text" id="lat" v-model="selectIncidentLat"
                         style="width: 400px; display: inline-block" /> &nbsp;
                     <!-- should lat/long be 1 or 2 input boxes??? -->
                     <label for="long" style="display: inline-block">Long:</label> &nbsp;
-                    <input type="text" id="long" v-model="selectIncidentLatLong"
+                    <input type="text" id="long" v-model="selectIncidentLong"
                         style="width:400px; display: inline-block" /> &nbsp; &nbsp;
                     <button type="button" id="go-button" @click="newLocation"
                         style="border: 1px solid black; padding: 10px; background-color: #30cf3d; font-weight: bold; padding: 10px">Go</button>
@@ -566,9 +589,12 @@ export default {
                 </div>
 
 
-                <h1 class="cell large-12" style="font-size: 40px">Six interesting findings that you discovered using
-                    your application:</h1>
-                    <p>I learned everything</p>
+                <h1 class="cell large-12" style="font-size: 40px">Six interesting findings:</h1>
+                <ol>
+                    <li>I learned everything</li>
+                    <li>I learned nothing</li>
+                </ol>
+                    
                 <div class="cell large-12">
 
                 </div>

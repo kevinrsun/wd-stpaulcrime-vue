@@ -9,6 +9,8 @@ export default {
             codes: [],
             neighborhoods: [],
             incidents: [],
+            filterNeighborhood: [],
+            filterIncidentType: [],
             leaflet: {
                 map: null,
                 center: {
@@ -93,27 +95,100 @@ export default {
         },
 
         filterCrimes(data) {
-            //take the input from the filters and apply them to the data...
-            //construct a url to pass to getJSON??
-            if(this.codes !== ''){ //Add the codes into the codes array??
 
-            }
-            if(this.neighborhoods !== ''){ //Add neighborhoods to neighborhoods array??
+            let incidentReq = "http://localhost:8000/incidents";
+            let codesReq = "http://localhost:8000/codes";
+            let neighborhoodsReq = "http://localhost:8000/neighborhoods";
+            let query = "";
 
-            }
-            if(this.incidents !== ''){ //Add incidents to incidents array??
+            if(this.filterNeighborhood.length > 0){
+                query = "?neighborhood=" + this.filterNeighborhood[0];
 
+                for(let i = 1; i < this.filterNeighborhood.length; i++) {
+                    query = query + "," + this.filterNeighborhood[i];
+                }
             }
+            if(this.filterIncidentType > 0){
+                if(query !== "") {
+                    query = query + "&code=";
+                } else {
+                    query = "?code=";
+                }
+
+                let HomeicideCodes = "100,110,120";
+                let AssaultCodes = "400,410,411,412,420,421,422,430,431,432,440,441,442,450,451,\
+                                    452,453,810,861,862,863"; // Code 810 was spelt Asasult
+                let RapeCodes = "210,220";
+                let TheftBurglaryRobberyCodes = "300,311,312,313,314,321,322,323,324,331,333,\
+                                                334,341,342,343,344,351,352,353,354,361,363,\
+                                                364,371,372,373,374,500,510,511,513,515,516,\
+                                                520,521,523,525,526,530,531,533,535,536,540,\
+                                                541,543,545,546,550,551,553,555,556,560,561,\
+                                                563,565,566,600,603,611,612,613,621,622,623,\
+                                                630,631,632,633,640,641,642,643,651,652,653,\
+                                                661,662,663,671,672,673,681,682,683,691,692,\
+                                                693,700,710,711,712,720,721,722,730,731,732";
+                                                
+                let PropertyDamageCodes =   "900,901,903,905,911,913,915,921,922,923,925,931,\
+                                            933,941,942,951,961,971,972,975,981,982,1400,1401,\
+                                            1410,1415,1416,1420,1425,1426,1430,1435,1436";
+
+                let NarcoticsCodes =    "1800,1810,1811,1812,1813,1814,1815,1820,1822,1823,1824,\
+                                        1825,1830,1835,1840,1841,1842,1843,1844,1845,1850,1855,\
+                                        1860,1865,1870,1880,1885";
+
+                let OtherCodes = "614,2619,3100,9954,9959,9986";
+
+                let codesArr = [
+                    HomeicideCodes, 
+                    AssaultCodes, 
+                    RapeCodes, 
+                    TheftBurglaryRobberyCodes,
+                    PropertyDamageCodes,
+                    NarcoticsCodes,
+                    OtherCodes
+                ];
+
+                for(let i = 0; i < this.filterIncidentType.length; i++) {
+                    if(i == 0) {
+                        query = query + codesArr[this.filterIncidentType[i]];
+                    } else {
+                        query = query + "," + codesArr[this.filterIncidentType[i]];
+                    }
+                }
+            }
+
+            incidentReq = incidentReq + query;
+            console.log("incidentReq: " + incidentReq);
 
             // Hitting Submit button for filter triggers API request
-            this.getJSON("http://localhost:8000/incidents")
+            Promise.all([this.getJSON(incidentReq), this.getJSON(codesReq), this.getJSON(neighborhoodsReq)])
             .then((data) => {
-                this.incidents = data;
+                console.log(data);
+                
+                this.incidents = data[0];
+                this.codes = data[1];
+                this.neighborhoods = data[2];
+
+                // Update incidents to use neighborhood_name rather than neighborhood_number, and incident_type rather than code
+                this.incidents.map((incident) => {
+                    // Change code to incident_type
+                    for(let i = 0; i < this.codes.length; i++) {
+                        if(incident.code == this.codes[i].code) {
+                            incident.code = this.codes[i].type;
+                        }
+                    }
+                    // Change neighborhood_number to neighborhood_name
+                    for(let i = 0; i < this.neighborhoods.length; i++) {
+                        if(incident.neighborhood_number == this.neighborhoods[i].id) {
+                            incident.neighborhood_number = this.neighborhoods[i].name;
+                        }
+                    }
+                });
             })
             .then((err) => {
                 console.log(err);
             });
-            
         },
 
         newLocation(data){
@@ -203,12 +278,20 @@ export default {
 
                 <div class="cell large-12">
                     <p style="text-decoration: underline; font-weight: bold;">Incident Type: </p>
-                    <input type="checkbox" id="incident1" name="incident1" value="Homicide">
-                    <label for="incident1">Homicide</label>
-                    <input type="checkbox" id="incident2" name="incident2" value="Rape">
-                    <label for="incident2">Rape</label>
-                    <input type="checkbox" id="incident3" name="incident3" value="Robbery">
-                    <label for="incident3">Robbery</label>
+                    <input type="checkbox" id="1" name="incident-type0" v-model="filterIncidentType" value="0">
+                    <label for="incident-type0"> Homicide</label>
+                    <input type="checkbox" id="2" name="incident-type1" v-model="filterIncidentType" value="1">
+                    <label for="incident-type1"> Assault</label>
+                    <input type="checkbox" id="3" name="incident-type2" v-model="filterIncidentType" value="2">
+                    <label for="incident-type2"> Rape</label>
+                    <input type="checkbox" id="4" name="incident-type3" v-model="filterIncidentType" value="3">
+                    <label for="incident-type3"> Theft / Burglary / Robbery</label>
+                    <input type="checkbox" id="5" name="incident-type4" v-model="filterIncidentType" value="4">
+                    <label for="incident-type4"> Property Damage</label>
+                    <input type="checkbox" id="6" name="incident-type5" v-model="filterIncidentType" value="5">
+                    <label for="incident-type5"> Narcotics</label>
+                    <input type="checkbox" id="7" name="incident-type6" v-model="filterIncidentType" value="6">
+                    <label for="incident-type6"> Other</label>
 
                     <!-- DO WE HAVE A LIST OF ALL INCIDENT TYPES??? -->
                 </div>
@@ -216,39 +299,39 @@ export default {
                 <!-- neighborhood_name: list of checkboxes per neighborhood_name -->
                 <div class="cell large-12">
                     <p style="text-decoration: underline; font-weight: bold;">Neighborhood Name: </p>
-                    <input type="checkbox" id="neighborhood1" name="neighborhood1" value="Conway/Battlecreeek/Highwood">
+                    <input type="checkbox" id="1" name="neighborhood1" v-model="filterNeighborhood" value="1">
                     <label for="neighborhood1">Conway/Battlecreek/Highwood</label>
-                    <input type="checkbox" id="neighborhood2" name="neighborhood2" value="Greater East Side">
+                    <input type="checkbox" id="2" name="neighborhood2" v-model="filterNeighborhood" value="2">
                     <label for="neighborhood2">Greater East Side</label>
-                    <input type="checkbox" id="neighborhood3" name="neighborhood3" value="West Side">
+                    <input type="checkbox" id="3" name="neighborhood3" v-model="filterNeighborhood" value="3">
                     <label for="neighborhood3">West Side</label>
-                    <input type="checkbox" id="neighborhood4" name="neighborhood4" value="Dayton's Bluff">
+                    <input type="checkbox" id="4" name="neighborhood4" v-model="filterNeighborhood" value="4">
                     <label for="neighborhood4">Dayton's Bluff</label>
-                    <input type="checkbox" id="neighborhood5" name="neighborhood5" value="Payne/Phalen">
+                    <input type="checkbox" id="5" name="neighborhood5" v-model="filterNeighborhood" value="5">
                     <label for="neighborhood5">Payne/Phalen</label>
-                    <input type="checkbox" id="neighborhood6" name="neighborhood6" value="North End">
+                    <input type="checkbox" id="6" name="neighborhood6" v-model="filterNeighborhood" value="6">
                     <label for="neighborhood6">North End</label>
-                    <input type="checkbox" id="neighborhood7" name="neighborhood7" value="Thomas/Dale(Frogtown)">
+                    <input type="checkbox" id="7" name="neighborhood7" v-model="filterNeighborhood" value="7">
                     <label for="neighborhood7">Thomas/Dale(Frogtown)</label>
-                    <input type="checkbox" id="neighborhood8" name="neighborhood8" value="Summit/University">
+                    <input type="checkbox" id="8" name="neighborhood8" v-model="filterNeighborhood" value="8">
                     <label for="neighborhood8">Summit/University</label>
-                    <input type="checkbox" id="neighborhood9" name="neighborhood9" value="West Seventh">
+                    <input type="checkbox" id="9" name="neighborhood9" v-model="filterNeighborhood" value="9">
                     <label for="neighborhood9">West Seventh</label>
-                    <input type="checkbox" id="neighborhood10" name="neighborhood10" value="Como">
+                    <input type="checkbox" id="10" name="neighborhood10" v-model="filterNeighborhood" value="10">
                     <label for="neighborhood10">Como</label>
-                    <input type="checkbox" id="neighborhood11" name="neighborhood11" value="Hamline/Midway">
+                    <input type="checkbox" id="11" name="neighborhood11" v-model="filterNeighborhood" value="11">
                     <label for="neighborhood11">Hamline/Midway</label>
-                    <input type="checkbox" id="neighborhood12" name="neighborhood12" value="St. Anthony">
+                    <input type="checkbox" id="12" name="neighborhood12" v-model="filterNeighborhood" value="12">
                     <label for="neighborhood12">St. Anthony</label>
-                    <input type="checkbox" id="neighborhood13" name="neighborhood13" value="Union Park">
+                    <input type="checkbox" id="13" name="neighborhood13" v-model="filterNeighborhood" value="13">
                     <label for="neighborhood13">Union Park</label>
-                    <input type="checkbox" id="neighborhood14" name="neighborhood14" value="Macalester/Groveland">
+                    <input type="checkbox" id="14" name="neighborhood14" v-model="filterNeighborhood" value="14">
                     <label for="neighborhood14">Macalester/Groveland</label>
-                    <input type="checkbox" id="neighborhood15" name="neighborhood15" value="Highland">
+                    <input type="checkbox" id="15" name="neighborhood15" v-model="filterNeighborhood" value="15">
                     <label for="neighborhood15">Highland</label>
-                    <input type="checkbox" id="neighborhood16" name="neighborhood16" value="Summit Hill">
+                    <input type="checkbox" id="16" name="neighborhood16" v-model="filterNeighborhood" value="16">
                     <label for="neighborhood16">Summit Hill</label>
-                    <input type="checkbox" id="neighborhood17" name="neighborhood17" value="Capitol River">
+                    <input type="checkbox" id="17" name="neighborhood17" v-model="filterNeighborhood" value="17">
                     <label for="neighborhood17">Capitol River</label>
                 </div>
 

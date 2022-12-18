@@ -19,10 +19,9 @@ export default {
                 <td>Case Number</td>
                 <td>Date</td>
                 <td>Time</td>
-                <td>Code</td>
                 <td>Incident Type</td>
                 <td>Police Grid</td>
-                <td>Neighborhood ID</td>
+                <td>Neighborhood Name</td>
                 <td>Block</td>
                 <td></td>
             </tr>
@@ -41,9 +40,6 @@ export default {
 
                 <!-- table data for the Code -->
                 <td>{{ incident.code }}</td>
-
-                <!-- table data for the incident type -->
-                <td>{{ incident.incident }}</td> 
 
                 <!-- table data for the police grid -->
                 <td>{{ incident.police_grid }}</td>

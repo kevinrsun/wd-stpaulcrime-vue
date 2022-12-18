@@ -15,23 +15,29 @@ export default {
     <table>
         <thead>
             <tr>
+                <td></td>
                 <td>Case Number</td>
-                <td>Date/Time</td>
+                <td>Date</td>
+                <td>Time</td>
                 <td>Code</td>
                 <td>Incident Type</td>
                 <td>Police Grid</td>
                 <td>Neighborhood ID</td>
                 <td>Block</td>
+                <td></td>
             </tr>
         </thead>
         <tbody>
             <tr v-for="(incident, index) in result_array"> <!-- makes table row for each incident result -->
+                <td><button type="button" id="select-incident" style="border: 1px solid black; padding: 5px; background-color: #30cf3d; font-weight: bold;">Select</button></td>
 
                 <!-- table data for the case number -->
                 <td>{{ incident.case_number }}</td>
 
                  <!-- table data for the Date/Time (Currently two seperate things, need to fix in Project 3 code) -->
                 <td>{{ incident.date }}</td>
+
+                <td>{{ incident.time }}</td>
 
                 <!-- table data for the Code -->
                 <td>{{ incident.code }}</td>
@@ -49,7 +55,7 @@ export default {
                 <td>{{ incident.block }}</td>
 
                 <!-- DELETE BUTTON FOR EACH CRIME IN THE TABLE, CLICKING SHOULD DELETE REQUEST TO REMOVE INCIDENT FROM DATABASE...  -->
-                <button type="button" id="delete-incident" style="border: 1px solid black; padding: 10px; background-color: red; font-weight: bold; padding: 10px">Delete</button>
+                <td><button type="button" id="delete-incident" style="border: 1px solid black; padding: 5px; background-color: red; font-weight: bold;">Delete</button></td>
 
             </tr>
         </tbody>

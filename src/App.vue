@@ -127,10 +127,16 @@ export default {
         },
 
         newIncident(data){
-            //put together the data for the new incident then pass as json??? 
+            //put together the data for the new incident then pass to uploadJSON??? 
 
             //Check if any of the inputs are null/empty
 
+
+        },
+
+        selectButtonClicked(){
+            //how do we get the data for that row...
+            //set the lat and long, kinda like top line in mounted i think...
 
         }
 

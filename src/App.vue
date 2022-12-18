@@ -106,15 +106,15 @@ export default {
             let neighborhoodsReq = "http://localhost:8000/neighborhoods";
             let query = "";
 
-            if(this.filterNeighborhood.length > 0){
+            if (this.filterNeighborhood.length > 0) {
                 query = "?neighborhood=" + this.filterNeighborhood[0];
 
-                for(let i = 1; i < this.filterNeighborhood.length; i++) {
+                for (let i = 1; i < this.filterNeighborhood.length; i++) {
                     query = query + "," + this.filterNeighborhood[i];
                 }
             }
-            if(this.filterIncidentType > 0){
-                if(query !== "") {
+            if (this.filterIncidentType > 0) {
+                if (query !== "") {
                     query = query + "&code=";
                 } else {
                     query = "?code=";
@@ -133,65 +133,87 @@ export default {
                                                 630,631,632,633,640,641,642,643,651,652,653,\
                                                 661,662,663,671,672,673,681,682,683,691,692,\
                                                 693,700,710,711,712,720,721,722,730,731,732";
-                                                
-                let PropertyDamageCodes =   "900,901,903,905,911,913,915,921,922,923,925,931,\
+
+                let PropertyDamageCodes = "900,901,903,905,911,913,915,921,922,923,925,931,\
                                             933,941,942,951,961,971,972,975,981,982,1400,1401,\
                                             1410,1415,1416,1420,1425,1426,1430,1435,1436";
 
-                let NarcoticsCodes =    "1800,1810,1811,1812,1813,1814,1815,1820,1822,1823,1824,\
+                let NarcoticsCodes = "1800,1810,1811,1812,1813,1814,1815,1820,1822,1823,1824,\
                                         1825,1830,1835,1840,1841,1842,1843,1844,1845,1850,1855,\
                                         1860,1865,1870,1880,1885";
 
                 let OtherCodes = "614,2619,3100,9954,9959,9986";
 
                 let codesArr = [
-                    HomeicideCodes, 
-                    AssaultCodes, 
-                    RapeCodes, 
+                    HomeicideCodes,
+                    AssaultCodes,
+                    RapeCodes,
                     TheftBurglaryRobberyCodes,
                     PropertyDamageCodes,
                     NarcoticsCodes,
                     OtherCodes
                 ];
 
-                for(let i = 0; i < this.filterIncidentType.length; i++) {
-                    if(i == 0) {
+                for (let i = 0; i < this.filterIncidentType.length; i++) {
+                    if (i == 0) {
                         query = query + codesArr[this.filterIncidentType[i]];
                     } else {
                         query = query + "," + codesArr[this.filterIncidentType[i]];
                     }
                 }
             }
-            if(this.filterDates > 0){
-                
-                if(query !== "") {
-                    query = query + "&start_date=" + this.filterDates[0].toString();
-                    //want to check for a time filter here right..?? 
-                    if(this.filterTimes > 0){
-                        query = query + this.filterTimes[0].toString();
+            if (this.filterDates.length > 0) { //check for date filters
+                console.log(this.filterDates[0]);
+                console.log(this.filterDates[1]);
+                console.log(this.filterTimes[0]);
+                console.log(this.filterTimes[1]);
+                if (query !== "") {
+                    if (this.filterDates[0]) {
+                        query = query + "&start_date=" + this.filterDates[0];
                     }
-
                 } else {
-                    query = query + "?start_date=" + this.filterDates[0].toString();
-                    if(this.filterTimes > 0){
-                        query = query + this.filterTimes[0].toString();
+                    if (this.filterDates[0]) {
+                        query = query + "?start_date=" + this.filterDates[0];
                     }
                 }
-                query = query + "&end_date=" + filterDates[1].toString();
-                if(this.filterTimes > 0){
-                    query = query + this.filterTimes[1].toString();
+                if (query !== "") {
+                    if (this.filterDates[1]) {
+                        query = query + "&end_date=" + this.filterDates[1];
+                    }
+                } else {
+                    if (this.filterDates[1]) {
+                        query = query + "?end_date=" + this.filterDates[1];
+                    }
                 }
-
-
             }
-            if(this.filterMaxIncidents !== 1000){
+            if (this.filterTimes.length > 0) { //check for time filters
+                if (query !== "") {
+                    if (this.filterTimes[0]) {
+                        query = query + "&start_time=" + this.filterTimes[0];
+                    }
+                } else {
+                    if (this.filterTimes[0]) {
+                        query = query + "?start_time=" + this.filterTimes[0];
+                    }
+                }
+                if (query !== "") {
+                    if (this.filterTimes[1]) {
+                        query = query + "&end_time=" + this.filterTimes[1];
+                    }
+                } else {
+                    if (this.filterTimes[1]) {
+                        query = query + "?end_time=" + this.filterTimes[1];
+                    }
+                }
+            }
+            if (this.filterMaxIncidents !== 1000) { //check for max incident filter, 1000 by default
                 console.log(this.filterMaxIncidents[0])
-                if(query !== ""){
+                if (query !== "") {
                     query = query + "&limit=" + this.filterMaxIncidents;
-                } else{
+                } else {
                     query = query + "?limit=" + this.filterMaxIncidents;
                 }
-                
+
             }
 
             incidentReq = incidentReq + query;
@@ -199,64 +221,64 @@ export default {
 
             // Hitting Submit button for filter triggers API request
             Promise.all([this.getJSON(incidentReq), this.getJSON(codesReq), this.getJSON(neighborhoodsReq)])
-            .then((data) => {
-                console.log(data);
-                
-                this.incidents = data[0];
-                this.codes = data[1];
-                this.neighborhoods = data[2];
+                .then((data) => {
+                    console.log(data);
 
-                // Update incidents to use neighborhood_name rather than neighborhood_number, and incident_type rather than code
-                this.incidents.map((incident) => {
-                    // Change code to incident_type
-                    for(let i = 0; i < this.codes.length; i++) {
-                        if(incident.code == this.codes[i].code) {
-                            incident.code = this.codes[i].type;
+                    this.incidents = data[0];
+                    this.codes = data[1];
+                    this.neighborhoods = data[2];
+
+                    // Update incidents to use neighborhood_name rather than neighborhood_number, and incident_type rather than code
+                    this.incidents.map((incident) => {
+                        // Change code to incident_type
+                        for (let i = 0; i < this.codes.length; i++) {
+                            if (incident.code == this.codes[i].code) {
+                                incident.code = this.codes[i].type;
+                            }
                         }
-                    }
-                    // Change neighborhood_number to neighborhood_name
-                    for(let i = 0; i < this.neighborhoods.length; i++) {
-                        if(incident.neighborhood_number == this.neighborhoods[i].id) {
-                            incident.neighborhood_number = this.neighborhoods[i].name;
+                        // Change neighborhood_number to neighborhood_name
+                        for (let i = 0; i < this.neighborhoods.length; i++) {
+                            if (incident.neighborhood_number == this.neighborhoods[i].id) {
+                                incident.neighborhood_number = this.neighborhoods[i].name;
+                            }
                         }
-                    }
+                    });
+                })
+                .then((err) => {
+                    console.log(err);
                 });
-            })
-            .then((err) => {
-                console.log(err);
-            });
         },
 
-        newLocation(data){
+        newLocation(data) {
             //Take the address or lat/long and update the map for new location...
             let getAddress = "https://nominatim.openstreetmap.org/reverse?lat=<value>&lon=<value>&<params>";
 
 
-            if(this.leaflet.center.address !== ''){
+            if (this.leaflet.center.address !== '') {
 
-            } else if(this.leaflet.center.lat !== '' && this.leaflet.center.long !== ''){
+            } else if (this.leaflet.center.lat !== '' && this.leaflet.center.long !== '') {
 
             }
 
         },
 
-        newIncident(data){
+        newIncident(data) {
             //put together the data for the new incident then pass to uploadJSON??? 
 
             //Check if any of the inputs are null/empty before making the PUT request
-            
+
 
 
         },
 
-        selectButtonClicked(data, case_number){
+        selectButtonClicked(data, case_number) {
             //how do we get the data for that row...
             //set the lat and long, kinda like top line in mounted() i think...
             console.log(case_number);
             //when have the case number, loop through the cases and get the lat/long for the case for the case number
 
-            for(let i = 0; i < this.codes.length; i++){
-                if(case_number == this.codes[i].code){
+            for (let i = 0; i < this.codes.length; i++) {
+                if (case_number == this.codes[i].code) {
                     //set lat/long to variable
                 }
             }
@@ -265,7 +287,7 @@ export default {
 
         },
 
-        deleteButtonClicked(data, case_number){
+        deleteButtonClicked(data, case_number) {
             console.log(case_number);
 
 
@@ -273,7 +295,7 @@ export default {
         }
 
     },
-    mounted() { 
+    mounted() {
         this.leaflet.map = L.map('leafletmap').setView([this.leaflet.center.lat, this.leaflet.center.lng], this.leaflet.zoom);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -319,14 +341,18 @@ export default {
                 <!-- Clamp input values if lat/long is outside of St. Paul's bounding box -->
                 <div class="cell large-12">
                     <label for="address" style="display: inline-block">Address:</label> &nbsp;
-                    <input type="text" id="address" v-model="selectIncidentAddress" style="width: 400px; display: inline-block"/> <br>
+                    <input type="text" id="address" v-model="selectIncidentAddress"
+                        style="width: 400px; display: inline-block" /> <br>
                     <!-- try to use a auto-filling one?? -->
                     <label for="lat" style="display: inline-block">Lat:</label> &nbsp;
-                    <input type="text" id="lat" v-model="selectIncidentLatLong" style="width: 400px; display: inline-block"/> &nbsp;
+                    <input type="text" id="lat" v-model="selectIncidentLatLong"
+                        style="width: 400px; display: inline-block" /> &nbsp;
                     <!-- should lat/long be 1 or 2 input boxes??? -->
                     <label for="long" style="display: inline-block">Long:</label> &nbsp;
-                    <input type="text" id="long" v-model="selectIncidentLatLong" style="width:400px; display: inline-block"/> &nbsp; &nbsp;
-                    <button type="button" id="go-button" @click="newLocation" style="border: 1px solid black; padding: 10px; background-color: #30cf3d; font-weight: bold; padding: 10px">Go</button>
+                    <input type="text" id="long" v-model="selectIncidentLatLong"
+                        style="width:400px; display: inline-block" /> &nbsp; &nbsp;
+                    <button type="button" id="go-button" @click="newLocation"
+                        style="border: 1px solid black; padding: 10px; background-color: #30cf3d; font-weight: bold; padding: 10px">Go</button>
                 </div>
 
 
@@ -394,9 +420,11 @@ export default {
                 <div class="cell large-4">
                     <p style="text-decoration: underline; font-weight: bold;">Dates: </p>
                     <label for="start-date" style="display: inline-block">Start Date:</label> &nbsp;
-                    <input type="text" id="start-date" v-model="filterDates[0]" style="width: 300px; display:inline-block"/> <br>
+                    <input type="text" id="start-date" v-model="filterDates[0]"
+                        style="width: 300px; display:inline-block" /> <br>
                     <label for="end-date" style="display:inline-block">End Date:</label> &nbsp;
-                    <input type="text" id="end-date" v-model="filterDates[1]" style="width: 300px; display: inline-block"/>
+                    <input type="text" id="end-date" v-model="filterDates[1]"
+                        style="width: 300px; display: inline-block" />
 
                 </div>
 
@@ -404,9 +432,11 @@ export default {
                 <div class="cell large-4">
                     <p style="text-decoration: underline; font-weight: bold;">Times: </p>
                     <label for="start-time" style="display: inline-block">Start Time:</label> &nbsp;
-                    <input type="text" id="start-time" v-model="filterTimes[0]" style="width: 300px; display: inline-block"/> <br>
+                    <input type="text" id="start-time" v-model="filterTimes[0]"
+                        style="width: 300px; display: inline-block" /> <br>
                     <label for="end-time" style="display: inline-block">End Time:</label> &nbsp;
-                    <input type="text" id="end-time" v-model="filterTimes[1]" style="width: 300px; display: inline-block"/>
+                    <input type="text" id="end-time" v-model="filterTimes[1]"
+                        style="width: 300px; display: inline-block" />
 
                 </div>
 
@@ -426,7 +456,7 @@ export default {
                 <br><br><br><br>
 
 
-                <CrimesResult :result_array="incidents"/>
+                <CrimesResult :result_array="incidents" />
 
 
                 <br><br>
@@ -448,11 +478,13 @@ export default {
                     <label for="case-number" style="display: inline-block">Case Number:</label> &nbsp;
                     <input type="text" id="case-number" style="width: 300px; display: inline-block"> <br>
 
-                    <label for="date" style="display: inline-block">Date:</label> &nbsp; 
-                    <input type="text" id="date" style="width: 300px; display: inline-block"> <br> <!-- show the correct format as faded text in box?? -->
+                    <label for="date" style="display: inline-block">Date:</label> &nbsp;
+                    <input type="text" id="date" style="width: 300px; display: inline-block"> <br>
+                    <!-- show the correct format as faded text in box?? -->
 
-                    <label for="time" style="display: inline-block">Time:</label> &nbsp; 
-                    <input type="text" id="time" style="width: 300px; display: inline-block"> <br> <!-- show the correct format as faded text in box?? -->
+                    <label for="time" style="display: inline-block">Time:</label> &nbsp;
+                    <input type="text" id="time" style="width: 300px; display: inline-block"> <br>
+                    <!-- show the correct format as faded text in box?? -->
 
                     <label for="incident-code" style="display: inline-block">Code:</label> &nbsp;
                     <input type="text" id="incident-code" style="width: 300px; display: inline-block"> <br>
@@ -472,7 +504,8 @@ export default {
 
 
 
-                    <button type="button" @click="newIncident" style="border: 1px solid black; padding: 10px; background-color: #30cf3d; font-weight: bold; padding: 10px">Submit</button>
+                    <button type="button" @click="newIncident"
+                        style="border: 1px solid black; padding: 10px; background-color: #30cf3d; font-weight: bold; padding: 10px">Submit</button>
 
                 </div>
 
@@ -496,7 +529,7 @@ export default {
                     <p style="font-size: 25px; margin: auto; text-align: center;">Jack Landwer</p>
                     <!-- photo and short bio-->
                     <!-- This can be on the API and we get using a request url -->
-                    <!-- <img src="images/jackPic.jpeg" alt="Jack" style="width: 250px"> --> 
+                    <!-- <img src="images/jackPic.jpeg" alt="Jack" style="width: 250px"> -->
                     <p>Senior at St. Thomas majoring in Computer Science. In my free time I like to snowboard, golf, and
                         play soccer.</p>
 

@@ -11,6 +11,11 @@ export default {
             incidents: [],
             filterNeighborhood: [],
             filterIncidentType: [],
+            filterDates: [],
+            filterTimes: [],
+            filterMaxIncidents: 1000,
+            selectIncidentAddress: [],
+            selectIncidentLatLong: [],
             leaflet: {
                 map: null,
                 center: {
@@ -157,6 +162,37 @@ export default {
                     }
                 }
             }
+            if(this.filterDates > 0){
+                
+                if(query !== "") {
+                    query = query + "&start_date=" + this.filterDates[0].toString();
+                    //want to check for a time filter here right..?? 
+                    if(this.filterTimes > 0){
+                        query = query + this.filterTimes[0].toString();
+                    }
+
+                } else {
+                    query = query + "?start_date=" + this.filterDates[0].toString();
+                    if(this.filterTimes > 0){
+                        query = query + this.filterTimes[0].toString();
+                    }
+                }
+                query = query + "&end_date=" + filterDates[1].toString();
+                if(this.filterTimes > 0){
+                    query = query + this.filterTimes[1].toString();
+                }
+
+
+            }
+            if(this.filterMaxIncidents !== 1000){
+                console.log(this.filterMaxIncidents[0])
+                if(query !== ""){
+                    query = query + "&limit=" + this.filterMaxIncidents;
+                } else{
+                    query = query + "?limit=" + this.filterMaxIncidents;
+                }
+                
+            }
 
             incidentReq = incidentReq + query;
             console.log("incidentReq: " + incidentReq);
@@ -193,6 +229,9 @@ export default {
 
         newLocation(data){
             //Take the address or lat/long and update the map for new location...
+            let getAddress = "https://nominatim.openstreetmap.org/reverse?lat=<value>&lon=<value>&<params>";
+
+
             if(this.leaflet.center.address !== ''){
 
             } else if(this.leaflet.center.lat !== '' && this.leaflet.center.long !== ''){
@@ -204,14 +243,32 @@ export default {
         newIncident(data){
             //put together the data for the new incident then pass to uploadJSON??? 
 
-            //Check if any of the inputs are null/empty
+            //Check if any of the inputs are null/empty before making the PUT request
+            
 
 
         },
 
-        selectButtonClicked(){
+        selectButtonClicked(data, case_number){
             //how do we get the data for that row...
-            //set the lat and long, kinda like top line in mounted i think...
+            //set the lat and long, kinda like top line in mounted() i think...
+            console.log(case_number);
+            //when have the case number, loop through the cases and get the lat/long for the case for the case number
+
+            for(let i = 0; i < this.codes.length; i++){
+                if(case_number == this.codes[i].code){
+                    //set lat/long to variable
+                }
+            }
+            //Want to drop a pin on the location and set the view on it
+
+
+        },
+
+        deleteButtonClicked(data, case_number){
+            console.log(case_number);
+
+
 
         }
 
@@ -262,13 +319,13 @@ export default {
                 <!-- Clamp input values if lat/long is outside of St. Paul's bounding box -->
                 <div class="cell large-12">
                     <label for="address" style="display: inline-block">Address:</label> &nbsp;
-                    <input type="text" id="address" style="width: 400px; display: inline-block"> <br>
+                    <input type="text" id="address" v-model="selectIncidentAddress" style="width: 400px; display: inline-block"/> <br>
                     <!-- try to use a auto-filling one?? -->
                     <label for="lat" style="display: inline-block">Lat:</label> &nbsp;
-                    <input type="text" id="lat" style="width: 400px; display: inline-block"> &nbsp;
+                    <input type="text" id="lat" v-model="selectIncidentLatLong" style="width: 400px; display: inline-block"/> &nbsp;
                     <!-- should lat/long be 1 or 2 input boxes??? -->
                     <label for="long" style="display: inline-block">Long:</label> &nbsp;
-                    <input type="text" id="long" style="width:400px; display: inline-block"> &nbsp; &nbsp;
+                    <input type="text" id="long" v-model="selectIncidentLatLong" style="width:400px; display: inline-block"/> &nbsp; &nbsp;
                     <button type="button" id="go-button" @click="newLocation" style="border: 1px solid black; padding: 10px; background-color: #30cf3d; font-weight: bold; padding: 10px">Go</button>
                 </div>
 
@@ -292,8 +349,6 @@ export default {
                     <label for="incident-type5"> Narcotics</label>
                     <input type="checkbox" id="7" name="incident-type6" v-model="filterIncidentType" value="6">
                     <label for="incident-type6"> Other</label>
-
-                    <!-- DO WE HAVE A LIST OF ALL INCIDENT TYPES??? -->
                 </div>
 
                 <!-- neighborhood_name: list of checkboxes per neighborhood_name -->
@@ -339,9 +394,9 @@ export default {
                 <div class="cell large-4">
                     <p style="text-decoration: underline; font-weight: bold;">Dates: </p>
                     <label for="start-date" style="display: inline-block">Start Date:</label> &nbsp;
-                    <input type="text" id="start-date" style="width: 300px; display:inline-block"> <br>
+                    <input type="text" id="start-date" v-model="filterDates[0]" style="width: 300px; display:inline-block"/> <br>
                     <label for="end-date" style="display:inline-block">End Date:</label> &nbsp;
-                    <input type="text" id="end-date" style="width: 300px; display: inline-block">
+                    <input type="text" id="end-date" v-model="filterDates[1]" style="width: 300px; display: inline-block"/>
 
                 </div>
 
@@ -349,16 +404,16 @@ export default {
                 <div class="cell large-4">
                     <p style="text-decoration: underline; font-weight: bold;">Times: </p>
                     <label for="start-time" style="display: inline-block">Start Time:</label> &nbsp;
-                    <input type="text" id="start-time" style="width: 300px; display: inline-block"> <br>
+                    <input type="text" id="start-time" v-model="filterTimes[0]" style="width: 300px; display: inline-block"/> <br>
                     <label for="end-time" style="display: inline-block">End Time:</label> &nbsp;
-                    <input type="text" id="end-time" style="width: 300px; display: inline-block">
+                    <input type="text" id="end-time" v-model="filterTimes[1]" style="width: 300px; display: inline-block"/>
 
                 </div>
 
                 <!-- max incidents: select maximum number of incidents to retrieve / show -->
                 <div class="cell large-4">
                     <p style="text-decoration: underline; font-weight: bold;">Max Incidents: </p>
-                    <input type="text" id="max-incidents" style="width: 200px">
+                    <input type="text" id="max-incidents" v-model="filterMaxIncidents" style="width: 200px">
 
                 </div>
 
@@ -371,7 +426,6 @@ export default {
                 <br><br><br><br>
 
 
-                <!-- Will want to build a table here to show the crimes like project 3 did, but using the way spotify-starter does -->
                 <CrimesResult :result_array="incidents"/>
 
 
@@ -387,7 +441,6 @@ export default {
             <div class="grid-x grid-padding-x">
                 <h1 class="cell auto" style="text-align: center">New Incident Form</h1>
 
-                <!-- Create a user input form for users to add a new crime incident to the database (i.e. submit the PUT request) -->
                 <!-- Ensure all fields are filled out before submitting request, otherwise show some error message -->
 
                 <!-- THINK ABOUT IF WE WANT TEXT BOXES FOR DROPDOWN MENUS FOR SOME OF THESE... -->
@@ -403,6 +456,7 @@ export default {
 
                     <label for="incident-code" style="display: inline-block">Code:</label> &nbsp;
                     <input type="text" id="incident-code" style="width: 300px; display: inline-block"> <br>
+
                     <!-- do we want to have the code and the incident type linked somehow?? like a dropdown for incident type that auto populates code? -->
                     <label for="incident-type" style="display:inline-block">Incident Type:</label> &nbsp;
                     <input type="text" id="incident-type" style="width: 300px; display: inline-block"> <br>

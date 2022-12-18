@@ -28,7 +28,7 @@ export default {
         </thead>
         <tbody>
             <tr v-for="(incident, index) in result_array"> <!-- makes table row for each incident result -->
-                <td><button type="button" id="select-incident" style="border: 1px solid black; padding: 5px; background-color: #30cf3d; font-weight: bold;">Select</button></td>
+                <td><button type="button" @click="selectButtonClicked(incident.case_number)" :id="'select-incident-' + incident.case_number" style="border: 1px solid black; padding: 5px; background-color: #30cf3d; font-weight: bold;">Select</button></td>
 
                 <!-- table data for the case number -->
                 <td>{{ incident.case_number }}</td>
@@ -48,10 +48,10 @@ export default {
                 <td>{{ incident.neighborhood_number }}</td>
 
                 <!-- table data for the block -->
-                <td>{{ incident.block }}</td>
+                <td>{{ incident.block }}</td> <!-- REPLACE THE X'S IN THE NUMBER ADDRESS WITH 0'S -->
 
                 <!-- DELETE BUTTON FOR EACH CRIME IN THE TABLE, CLICKING SHOULD DELETE REQUEST TO REMOVE INCIDENT FROM DATABASE...  -->
-                <td><button type="button" id="delete-incident" style="border: 1px solid black; padding: 5px; background-color: red; font-weight: bold;">Delete</button></td>
+                <td><button type="button" @click="deleteButtonClicked" :id="'delete-incident-' + incident.case_number" style="border: 1px solid black; padding: 5px; background-color: red; font-weight: bold;">Delete</button></td>
 
             </tr>
         </tbody>

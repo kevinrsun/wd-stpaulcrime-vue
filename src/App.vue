@@ -27,10 +27,10 @@ export default {
             selectIncidentLong: "",
             codeTypes: {
                 HomeicideCodes: "100,110,120",
-                AssaultCodes:   "400,410,411,412,420,421,422,430,431,432,440,441,442,450,451,\
+                AssaultCodes: "400,410,411,412,420,421,422,430,431,432,440,441,442,450,451,\
                                 452,453,810,861,862,863", // Code 810 was spelt Asasult
                 RapeCodes: "210,220",
-                TheftBurglaryRobberyCodes:  "300,311,312,313,314,321,322,323,324,331,333,\
+                TheftBurglaryRobberyCodes: "300,311,312,313,314,321,322,323,324,331,333,\
                                             334,341,342,343,344,351,352,353,354,361,363,\
                                             364,371,372,373,374,500,510,511,513,515,516,\
                                             520,521,523,525,526,530,531,533,535,536,540,\
@@ -40,7 +40,7 @@ export default {
                                             661,662,663,671,672,673,681,682,683,691,692,\
                                             693,700,710,711,712,720,721,722,730,731,732",
 
-                PropertyDamageCodes:    "900,901,903,905,911,913,915,921,922,923,925,931,\
+                PropertyDamageCodes: "900,901,903,905,911,913,915,921,922,923,925,931,\
                                         933,941,942,951,961,971,972,975,981,982,1400,1401,\
                                         1410,1415,1416,1420,1425,1426,1430,1435,1436",
 
@@ -254,22 +254,22 @@ export default {
         newLocation() {
             let query = "";
 
-            if(this.selectIncidentAddress !== "") {
+            if (this.selectIncidentAddress !== "") {
                 query = "https://nominatim.openstreetmap.org/search?q=" + this.selectIncidentAddress + "&format=json";
             } else {
-                if(this.selectIncidentLat > this.leaflet.bounds.nw.lat) {
+                if (this.selectIncidentLat > this.leaflet.bounds.nw.lat) {
                     this.selectIncidentLat = this.leaflet.bounds.nw.lat;
                     alert("Latitude value is out of bounds. Set to max possible value.");
                 }
-                if(this.selectIncidentLat < this.leaflet.bounds.se.lat) {
+                if (this.selectIncidentLat < this.leaflet.bounds.se.lat) {
                     this.selectIncidentLat = this.leaflet.bounds.se.lat;
                     alert("Latitude value is out of bounds. Set to min possible value.");
                 }
-                if(this.selectIncidentLong > this.leaflet.bounds.se.lng) {
+                if (this.selectIncidentLong > this.leaflet.bounds.se.lng) {
                     this.selectIncidentLong = this.leaflet.bounds.se.lng;
                     alert("Longitude value is out of bounds. Set to max possible value.");
                 }
-                if(this.selectIncidentLong < this.leaflet.bounds.nw.lng) {
+                if (this.selectIncidentLong < this.leaflet.bounds.nw.lng) {
                     this.selectIncidentLong = this.leaflet.bounds.nw.lng;
                     alert("Longitude value is out of bounds. Set to min possible value.");
                 }
@@ -278,13 +278,13 @@ export default {
             }
 
             this.getJSON(query)
-            .then((data) => {
-                console.log(data);
-                this.updatedLocation(data);
-            })
-            .then((err) => {
-                console.log(err);
-            });
+                .then((data) => {
+                    console.log(data);
+                    this.updatedLocation(data);
+                })
+                .then((err) => {
+                    console.log(err);
+                });
         },
 
         updatedLocation(data) {
@@ -303,32 +303,32 @@ export default {
 
         newIncident() {
             //put together the data for the new incident then pass to uploadJSON???
-            
+
             //Check if any of the inputs are null/empty before making the PUT request
             let incidentReq = "http://localhost:8000/new-incident";
             let method = 'PUT';
-            if (this.new_incident_casenumber === null){
+            if (this.new_incident_casenumber === null) {
                 alert("Case Number Field Empty");
-            } 
-            if (this.new_incident_date === ''){
+            }
+            if (this.new_incident_date === '') {
                 alert("Date Field Empty");
-            } 
-            if (this.new_incident_block === ''){
+            }
+            if (this.new_incident_block === '') {
                 alert("Block Field Empty");
             }
-            if (this.new_incident_code === null){
+            if (this.new_incident_code === null) {
                 alert("Code Field Empty");
             }
-            if (this.new_incident_grid === null){
+            if (this.new_incident_grid === null) {
                 alert("Grid Field Empty");
             }
-            if (this.new_incident_neigh_id === null){
+            if (this.new_incident_neigh_id === null) {
                 alert("Neighbourhood ID Field Empty");
             }
-            if (this.new_incident_time === ''){
+            if (this.new_incident_time === '') {
                 alert("Time Field Empty");
             }
-            if (this.new_incident_type === ''){
+            if (this.new_incident_type === '') {
                 alert("Type Field Empty");
             }
 
@@ -347,51 +347,50 @@ export default {
 
             //console.log(this.new_incident_casenumber);
             this.uploadJSON(method, incidentReq, inputData)
-            .then((data) => {
-                console.log(data);
-                alert("Success");
-            })
-            .then((err) =>{
-                console.log(err);
-            })
+                .then((data) => {
+                    console.log(data);
+                    alert("Success");
+                })
+                .then((err) => {
+                    console.log(err);
+                })
         },
 
         selectButtonClicked(case_number) {
             console.log(case_number);
             let addy = case_number.block.toString();
             let parseAddyNum = addy.split(" ", 1);
-            let addyNumber = parseAddyNum[0].replaceAll('X', 0); 
-            let addr = addy.substring(addy.indexOf(' ') + 1); 
+            let addyNumber = parseAddyNum[0].replaceAll('X', 0);
+            let addr = addy.substring(addy.indexOf(' ') + 1);
 
             let fullAddy = 'https://nominatim.openstreetmap.org/search?q=' + addyNumber + ' ' + addr + ', St. Paul MN' + '&format=json';
             console.log(fullAddy);
 
             this.getJSON(fullAddy)
-            .then((data) => {
-                console.log(data);
-                if(data.length !== 0){
-                    this.leaflet.center.lat = data[0].lat;
-                    this.leaflet.center.lng = data[0].lon;
-                    this.leaflet.map.flyTo([this.leaflet.center.lat, this.leaflet.center.lng], 17); 
-                    let yellowIcon = new L.icon ({
-                        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
-                        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                        iconSize: [25, 41],
-                        iconAnchor: [12, 41],
-                        popupAnchor: [1, -34],
-                        shadowSize: [41, 41]
-                    });
-                    let markerPin = new L.Marker(new L.LatLng(this.leaflet.center.lat, this.leaflet.center.lng), {icon: yellowIcon});
-                    let markerPopup = L.popup().setContent('<p>Incident: ' + case_number.code + '</p>\n' + '<p>Date: ' + case_number.date + '</p>\n' + '<p>Time: ' + case_number.time + '</p>');
-                    markerPin.bindPopup(markerPopup).openPopup();
-                    this.leaflet.map.addLayer(markerPin);
-                } else{
-                    alert('No data found');
-                }
-            })
-            .then((err) => {
-                console.log(err);
-            });
+                .then((data) => {
+                    if (data.length !== 0) {
+                        this.leaflet.center.lat = data[0].lat;
+                        this.leaflet.center.lng = data[0].lon;
+                        this.leaflet.map.flyTo([this.leaflet.center.lat, this.leaflet.center.lng], 17);
+                        let yellowIcon = new L.icon({
+                            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
+                            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41],
+                            popupAnchor: [1, -34],
+                            shadowSize: [41, 41]
+                        });
+                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.center.lat, this.leaflet.center.lng), { icon: yellowIcon });
+                        let markerPopup = L.popup().setContent('<p>Incident: ' + case_number.code + '</p>\n' + '<p>Date: ' + case_number.date + '</p>\n' + '<p>Time: ' + case_number.time + '</p>');
+                        markerPin.bindPopup(markerPopup).openPopup();
+                        this.leaflet.map.addLayer(markerPin);
+                    } else {
+                        alert('No data found');
+                    }
+                })
+                .then((err) => {
+                    console.log(err);
+                });
             //drop the pin on the incident location. New marker color, has popup with date, time, incident, and delete button.
 
 
@@ -403,16 +402,194 @@ export default {
             let inputData = { case_number: incident.case_number };
 
             this.uploadJSON(method, deleteReq, inputData)
-            .then(() => {
-                alert("Case number has been delete");
-                result_array.splice(index, 1);
+                .then(() => {
+                    alert("Case number has been delete");
+                    result_array.splice(index, 1);
+                })
+                .catch(() => {
+                    alert("Case number not exist");
+                });
+        },
+
+        neighborhoodMarkers() {
+            let incidentReq = "http://localhost:8000/incidents";
+            this.getJSON(incidentReq)
+            .then((data) => {
+                console.log(data);
+                let hood1 = 0;
+                let hood2 = 0;
+                let hood3 = 0;
+                let hood4 = 0;
+                let hood5 = 0;
+                let hood6 = 0;
+                let hood7 = 0;
+                let hood8 = 0;
+                let hood9 = 0;
+                let hood10 = 0;
+                let hood11 = 0;
+                let hood12 = 0;
+                let hood13 = 0;
+                let hood14 = 0;
+                let hood15 = 0;
+                let hood16 = 0;
+                let hood17 = 0;
+                let greenIcon = new L.icon({
+                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowSize: [41, 41]
+                });
+                for (let j = 0; j < data.length; j++) { //set neighborhood incident totals
+                    if (data[j].neighborhood_number === 1) {
+                        hood1++;
+                    } else if (data[j].neighborhood_number === 2) {
+                        hood2++;
+                    } else if (data[j].neighborhood_number === 3) {
+                        hood3++;
+                    } else if (data[j].neighborhood_number === 4) {
+                        hood4++;
+                    } else if (data[j].neighborhood_number === 5) {
+                        hood5++;
+                    } else if (data[j].neighborhood_number === 6) {
+                        hood6++;
+                    } else if (data[j].neighborhood_number === 7) {
+                        hood7++;
+                    } else if (data[j].neighborhood_number === 8) {
+                        hood8++;
+                    } else if (data[j].neighborhood_number === 9) {
+                        hood9++;
+                    } else if (data[j].neighborhood_number === 10) {
+                        hood10++;
+                    } else if (data[j].neighborhood_number === 11) {
+                        hood11++;
+                    } else if (data[j].neighborhood_number === 12) {
+                        hood12++;
+                    } else if (data[j].neighborhood_number === 13) {
+                        hood13++;
+                    } else if (data[j].neighborhood_number === 14) {
+                        hood14++;
+                    } else if (data[j].neighborhood_number === 15) {
+                        hood15++;
+                    } else if (data[j].neighborhood_number === 16) {
+                        hood16++;
+                    } else if (data[j].neighborhood_number === 17) {
+                        hood17++;
+                    }
+                }
+                for (let i = 0; i < this.leaflet.neighborhood_markers.length; i++) {  //loop thru the neighborhood markers
+                    if (i === 0) {
+                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood1 + '</p>');
+                        markerPin.bindPopup(markerPopup).openPopup();
+                        this.leaflet.neighborhood_markers[i].marker = markerPin;
+                        this.leaflet.map.addLayer(markerPin);
+                    } else if (i === 1) {
+                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood2 + '</p>');
+                        markerPin.bindPopup(markerPopup).openPopup();
+                        this.leaflet.neighborhood_markers[i].marker = markerPin;
+                        this.leaflet.map.addLayer(markerPin);
+                    } else if (i === 2) {
+                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood3 + '</p>');
+                        markerPin.bindPopup(markerPopup).openPopup();
+                        this.leaflet.neighborhood_markers[i].marker = markerPin;
+                        this.leaflet.map.addLayer(markerPin);
+                    } else if (i === 3) {
+                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood4 + '</p>');
+                        markerPin.bindPopup(markerPopup).openPopup();
+                        this.leaflet.neighborhood_markers[i].marker = markerPin;
+                        this.leaflet.map.addLayer(markerPin);
+                    } else if (i === 4) {
+                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood5 + '</p>');
+                        markerPin.bindPopup(markerPopup).openPopup();
+                        this.leaflet.neighborhood_markers[i].marker = markerPin;
+                        this.leaflet.map.addLayer(markerPin);
+                    } else if (i === 5) {
+                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood6 + '</p>');
+                        markerPin.bindPopup(markerPopup).openPopup();
+                        this.leaflet.neighborhood_markers[i].marker = markerPin;
+                        this.leaflet.map.addLayer(markerPin);
+                    } else if (i === 6) {
+                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood7 + '</p>');
+                        markerPin.bindPopup(markerPopup).openPopup();
+                        this.leaflet.neighborhood_markers[i].marker = markerPin;
+                        this.leaflet.map.addLayer(markerPin);
+                    } else if (i === 7) {
+                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood8 + '</p>');
+                        markerPin.bindPopup(markerPopup).openPopup();
+                        this.leaflet.neighborhood_markers[i].marker = markerPin;
+                        this.leaflet.map.addLayer(markerPin);
+                    } else if (i === 8) {
+                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood9 + '</p>');
+                        markerPin.bindPopup(markerPopup).openPopup();
+                        this.leaflet.neighborhood_markers[i].marker = markerPin;
+                        this.leaflet.map.addLayer(markerPin);
+                    } else if (i === 9) {
+                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood10 + '</p>');
+                        markerPin.bindPopup(markerPopup).openPopup();
+                        this.leaflet.neighborhood_markers[i].marker = markerPin;
+                        this.leaflet.map.addLayer(markerPin);
+                    } else if (i === 10) {
+                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood11 + '</p>');
+                        markerPin.bindPopup(markerPopup).openPopup();
+                        this.leaflet.neighborhood_markers[i].marker = markerPin;
+                        this.leaflet.map.addLayer(markerPin);
+                    } else if (i === 11) {
+                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood12 + '</p>');
+                        markerPin.bindPopup(markerPopup).openPopup();
+                        this.leaflet.neighborhood_markers[i].marker = markerPin;
+                        this.leaflet.map.addLayer(markerPin);
+                    } else if (i === 12) {
+                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood13 + '</p>');
+                        markerPin.bindPopup(markerPopup).openPopup();
+                        this.leaflet.neighborhood_markers[i].marker = markerPin;
+                        this.leaflet.map.addLayer(markerPin);
+                    } else if (i === 13) {
+                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood14 + '</p>');
+                        markerPin.bindPopup(markerPopup).openPopup();
+                        this.leaflet.neighborhood_markers[i].marker = markerPin;
+                        this.leaflet.map.addLayer(markerPin);
+                    } else if (i === 14) {
+                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood15 + '</p>');
+                        markerPin.bindPopup(markerPopup).openPopup();
+                        this.leaflet.neighborhood_markers[i].marker = markerPin;
+                        this.leaflet.map.addLayer(markerPin);
+                    } else if (i === 15) {
+                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood16 + '</p>');
+                        markerPin.bindPopup(markerPopup).openPopup();
+                        this.leaflet.neighborhood_markers[i].marker = markerPin;
+                        this.leaflet.map.addLayer(markerPin);
+                    } else if (i === 16) {
+                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood17 + '</p>');
+                        markerPin.bindPopup(markerPopup).openPopup();
+                        this.leaflet.neighborhood_markers[i].marker = markerPin;
+                        this.leaflet.map.addLayer(markerPin);
+                    }
+                }
             })
-            .catch(() => {
-                alert("Case number not exist");
+            .then((err) => {
+                console.log(err);
             });
         }
-
     },
+
     mounted() {
         this.leaflet.map = L.map('leafletmap').setView([this.leaflet.center.lat, this.leaflet.center.lng], this.leaflet.zoom);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -441,6 +618,8 @@ export default {
         // Map events
         this.leaflet.map.on('dragend', this.mapPanOrZoom);
         this.leaflet.map.on('zoom', this.mapPanOrZoom);
+
+        this.neighborhoodMarkers();
     }
 }
 </script>
@@ -580,8 +759,9 @@ export default {
 
                 <br><br><br><br>
 
-                <CrimesResult :result_array="incidents" :code_types="codesTypes" :selectButtonClicked="selectButtonClicked" :deleteButtonClicked="deleteButtonClicked"/>
-                
+                <CrimesResult :result_array="incidents" :code_types="codesTypes"
+                    :selectButtonClicked="selectButtonClicked" :deleteButtonClicked="deleteButtonClicked" />
+
                 <br><br>
             </div>
         </div>
@@ -599,31 +779,39 @@ export default {
                 <!-- THINK ABOUT IF WE WANT TEXT BOXES FOR DROPDOWN MENUS FOR SOME OF THESE... -->
                 <div class="cell large-12" style="text-align: center">
                     <label for="case-number" style="display: inline-block">Case Number:</label> &nbsp;
-                    <input type="text" id="case-number" style="width: 300px; display: inline-block" v-model="new_incident_casenumber"> <br>
+                    <input type="text" id="case-number" style="width: 300px; display: inline-block"
+                        v-model="new_incident_casenumber"> <br>
 
                     <label for="date" style="display: inline-block">Date:</label> &nbsp;
-                    <input type="text" id="date" style="width: 300px; display: inline-block" v-model="new_incident_date"> <br>
+                    <input type="text" id="date" style="width: 300px; display: inline-block"
+                        v-model="new_incident_date"> <br>
                     <!-- show the correct format as faded text in box?? -->
 
                     <label for="time" style="display: inline-block">Time:</label> &nbsp;
-                    <input type="text" id="time" style="width: 300px; display: inline-block" v-model="new_incident_time"> <br>
+                    <input type="text" id="time" style="width: 300px; display: inline-block"
+                        v-model="new_incident_time"> <br>
                     <!-- show the correct format as faded text in box?? -->
 
                     <label for="incident-code" style="display: inline-block">Code:</label> &nbsp;
-                    <input type="text" id="incident-code" style="width: 300px; display: inline-block" v-model="new_incident_code"> <br>
+                    <input type="text" id="incident-code" style="width: 300px; display: inline-block"
+                        v-model="new_incident_code"> <br>
 
                     <!-- do we want to have the code and the incident type linked somehow?? like a dropdown for incident type that auto populates code? -->
                     <label for="incident-type" style="display:inline-block">Incident Type:</label> &nbsp;
-                    <input type="text" id="incident-type" style="width: 300px; display: inline-block" v-model="new_incident_type"> <br>
+                    <input type="text" id="incident-type" style="width: 300px; display: inline-block"
+                        v-model="new_incident_type"> <br>
 
                     <label for="police-grid" style="display: inline-block">Police Grid:</label> &nbsp;
-                    <input type="text" id="police-grid" style="width: 300px; display: inline-block" v-model="new_incident_grid"> <br>
+                    <input type="text" id="police-grid" style="width: 300px; display: inline-block"
+                        v-model="new_incident_grid"> <br>
 
                     <label for="neighborhood-id" style="display: inline-block">Neighborhood ID:</label> &nbsp;
-                    <input type="text" id="neighborhood-id" style="width: 300px; display: inline-block" v-model="new_incident_neigh_id"> <br>
+                    <input type="text" id="neighborhood-id" style="width: 300px; display: inline-block"
+                        v-model="new_incident_neigh_id"> <br>
 
                     <label for="block" style="display: inline-block">Block:</label> &nbsp;
-                    <input type="text" id="block" style="width: 300px; display: inline-block" v-model="new_incident_block"> <br>
+                    <input type="text" id="block" style="width: 300px; display: inline-block"
+                        v-model="new_incident_block"> <br>
 
 
 
@@ -672,18 +860,26 @@ export default {
                     <!-- photo and short bio-->
                     <!-- This can be on the API and we get using a request url -->
                     <!-- <img src="images/" alt="Sam" style="width: 250px"> -->
-                    <p>My name is Sam McEnery, I am a computer science major here at St. Thomas. I am originally from Geneva, Illinois--a Suburb of Chicago.  I've played Hockey all my life so I enjoy playing pond hockey when the weather gets cold enough.</p>
+                    <p>My name is Sam McEnery, I am a computer science major here at St. Thomas. I am originally from
+                        Geneva, Illinois--a Suburb of Chicago. I've played Hockey all my life so I enjoy playing pond
+                        hockey when the weather gets cold enough.</p>
                 </div>
 
                 <!-- maybe add some horizontal lines to separate the sections??-->
 
                 <h1 class="cell large-12" style="font-size: 40px">Description of tools:</h1>
                 <ol>
-                    <li>In the Map section there are many tools we can use.  First, we can look up crime by address, this is done by typing in the specified address into the search bar.  Next, we can also find crimes by latitude and longitude through the same process.  These search results can be filtered by checking the boxes of the specified crime type, neighborhood, or date and time in which it occurred.</li>
-                    <li>Once a search is requested, the table populates with all the crimes with the specified parameters with colors coordinating the violence of each crime.</li>
-                    <li>In the New Incident section, this is where the user would go to input a new crime into the database.  All parameters must be met in order to succesfully do this.</li>
+                    <li>In the Map section there are many tools we can use. First, we can look up crime by address, this
+                        is done by typing in the specified address into the search bar. Next, we can also find crimes by
+                        latitude and longitude through the same process. These search results can be filtered by
+                        checking the boxes of the specified crime type, neighborhood, or date and time in which it
+                        occurred.</li>
+                    <li>Once a search is requested, the table populates with all the crimes with the specified
+                        parameters with colors coordinating the violence of each crime.</li>
+                    <li>In the New Incident section, this is where the user would go to input a new crime into the
+                        database. All parameters must be met in order to succesfully do this.</li>
                 </ol>
-                
+
                 <div class="cell large-12">
 
                 </div>

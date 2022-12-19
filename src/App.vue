@@ -293,10 +293,14 @@ export default {
         },
 
         mapPanning() {
-            this.leaflet.center.lat = data.lat;
-            this.leaflet.center.lng = data.lon;
+            this.leaflet.center.lat = this.leaflet.map.getCenter().lat;
+            this.leaflet.center.lng = this.leaflet.map.getCenter().lng;
+
+            this.selectIncidentLat = this.leaflet.map.getCenter().lat;
+            this.selectIncidentLong = this.leaflet.map.getCenter().lng;
         },
 
+        newIncident() {
         newIncident() {
             //put together the data for the new incident then pass to uploadJSON???
 

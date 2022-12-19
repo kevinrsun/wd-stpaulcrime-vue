@@ -285,14 +285,19 @@ export default {
         },
 
         mapPanning() {
-            this.leaflet.center.lat = data.lat;
-            this.leaflet.center.lng = data.lon;
+            this.leaflet.center.lat = this.leaflet.map.getCenter().lat;
+            this.leaflet.center.lng = this.leaflet.map.getCenter().lng;
+
+            this.selectIncidentLat = this.leaflet.map.getCenter().lat;
+            this.selectIncidentLong = this.leaflet.map.getCenter().lng;
         },
 
-        newIncident(data) {
+        newIncident() {
             //put together the data for the new incident then pass to uploadJSON???
 
             //Check if any of the inputs are null/empty before making the PUT request
+
+            console.log(this.new_incident_casenumber);
 
 
 
@@ -536,31 +541,31 @@ export default {
                 <!-- THINK ABOUT IF WE WANT TEXT BOXES FOR DROPDOWN MENUS FOR SOME OF THESE... -->
                 <div class="cell large-12" style="text-align: center">
                     <label for="case-number" style="display: inline-block">Case Number:</label> &nbsp;
-                    <input type="text" id="case-number" style="width: 300px; display: inline-block"> <br>
+                    <input type="text" id="case-number" style="width: 300px; display: inline-block" v-model="new_incident_casenumber"> <br>
 
                     <label for="date" style="display: inline-block">Date:</label> &nbsp;
-                    <input type="text" id="date" style="width: 300px; display: inline-block"> <br>
+                    <input type="text" id="date" style="width: 300px; display: inline-block" v-model="new_incident_date"> <br>
                     <!-- show the correct format as faded text in box?? -->
 
                     <label for="time" style="display: inline-block">Time:</label> &nbsp;
-                    <input type="text" id="time" style="width: 300px; display: inline-block"> <br>
+                    <input type="text" id="time" style="width: 300px; display: inline-block" v-model="new_incident_time"> <br>
                     <!-- show the correct format as faded text in box?? -->
 
                     <label for="incident-code" style="display: inline-block">Code:</label> &nbsp;
-                    <input type="text" id="incident-code" style="width: 300px; display: inline-block"> <br>
+                    <input type="text" id="incident-code" style="width: 300px; display: inline-block" v-model="new_incident_code"> <br>
 
                     <!-- do we want to have the code and the incident type linked somehow?? like a dropdown for incident type that auto populates code? -->
                     <label for="incident-type" style="display:inline-block">Incident Type:</label> &nbsp;
-                    <input type="text" id="incident-type" style="width: 300px; display: inline-block"> <br>
+                    <input type="text" id="incident-type" style="width: 300px; display: inline-block" v-model="new_incident_type"> <br>
 
                     <label for="police-grid" style="display: inline-block">Police Grid:</label> &nbsp;
-                    <input type="text" id="police-grid" style="width: 300px; display: inline-block"> <br>
+                    <input type="text" id="police-grid" style="width: 300px; display: inline-block" v-model="new_incident_grid"> <br>
 
                     <label for="neighborhood-id" style="display: inline-block">Neighborhood ID:</label> &nbsp;
-                    <input type="text" id="neighborhood-id" style="width: 300px; display: inline-block"> <br>
+                    <input type="text" id="neighborhood-id" style="width: 300px; display: inline-block" v-model="new_incident_neigh_id"> <br>
 
                     <label for="block" style="display: inline-block">Block:</label> &nbsp;
-                    <input type="text" id="block" style="width: 300px; display: inline-block"> <br>
+                    <input type="text" id="block" style="width: 300px; display: inline-block" v-model="new_incident_block"> <br>
 
 
 

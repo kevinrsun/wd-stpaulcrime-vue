@@ -1,7 +1,8 @@
 <script>
 export default {
     props: {
-        result_array: Array
+        result_array: Array,
+        selectButtonClicked: Function
     },
     watch: {
         result_array() {
@@ -28,7 +29,7 @@ export default {
         </thead>
         <tbody>
             <tr v-for="(incident, index) in result_array"> <!-- makes table row for each incident result -->
-                <td><button type="button" @click="selectButtonClicked(incident.case_number)" :id="'select-incident-' + incident.case_number" style="border: 1px solid black; padding: 5px; background-color: #30cf3d; font-weight: bold;">Select</button></td>
+                <td><button type="button" @click="this.selectButtonClicked(incident)" :id="'select-incident-' + incident.case_number" style="border: 1px solid black; padding: 5px; background-color: #30cf3d; font-weight: bold;">Select</button></td>
 
                 <!-- table data for the case number -->
                 <td>{{ incident.case_number }}</td>

@@ -352,44 +352,43 @@ export default {
             })
         },
 
-        selectButtonClicked(data, case_number) {
-            //how do we get the data for that row...
-            //set the lat and long, kinda like top line in mounted() i think...
+        selectButtonClicked(case_number) {
             console.log(case_number);
-            //when have the case number, loop through the cases and get the lat/long for the case for the case number
+            let addy = case_number.block.toString();
+            let parseAddyNum = addy.split(" ", 1);
+            let addyNumber = parseAddyNum[0].replaceAll('X', 0); 
+            let addr = addy.substring(addy.indexOf(' ') + 1); 
 
-            let cnAddress = '';
-            let cnLat = '';
-            let cnLong = '';
+            let fullAddy = 'https://nominatim.openstreetmap.org/search?q=' + addyNumber + ' ' + addr + ', St. Paul MN' + '&format=json';
+            console.log(fullAddy);
 
-            if(this.selectIncidentAddress !== 0){
-
-            }
-            if(this.selectIncidentLat !== ''){
-
-            }
-            if(this.selectIncidentLong !== ''){
-
-            }
-
-            for (let i = 0; i < this.codes.length; i++) {
-                if (case_number == this.codes[i].code) {
-                    //set lat/long to variable
-                    cnAddress = this.codes[i].address;
-                    cnLat = this.codes[i].lat;
-                    cnLong = this.codes[i].long;
-                    //Should I just break out right here..??
+            this.getJSON(fullAddy)
+            .then((data) => {
+                console.log(data);
+                if(data.length !== 0){
+                    this.leaflet.center.lat = data[0].lat;
+                    this.leaflet.center.lng = data[0].lon;
+                    this.leaflet.map.flyTo([this.leaflet.center.lat, this.leaflet.center.lng], 17); 
+                    let yellowIcon = new L.icon ({
+                        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
+                        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        popupAnchor: [1, -34],
+                        shadowSize: [41, 41]
+                    });
+                    let markerPin = new L.Marker(new L.LatLng(this.leaflet.center.lat, this.leaflet.center.lng), {icon: yellowIcon});
+                    let markerPopup = L.popup().setContent('<p>Incident: ' + case_number.code + '</p>\n' + '<p>Date: ' + case_number.date + '</p>\n' + '<p>Time: ' + case_number.time + '</p>');
+                    markerPin.bindPopup(markerPopup).openPopup();
+                    this.leaflet.map.addLayer(markerPin);
+                } else{
+                    alert('No data found');
                 }
-            }
-            //Want to drop a pin on the location and set the view on it
-            this.leaflet.center.lat = cnLat;
-            this.leaflet.center.lng = cnLong;
-            this.leaflet.center.address = cnAddress;
-
-            this.leaflet.map = L.map('leafletmap').setView([this.leaflet.center.lat, this.leaflet.center.lng], this.leaflet.zoom);
-
-            //drop the pin on the incident location. New marker color, has popup with date, time, incident, and delete button. REPLACE X's in address #
-             
+            })
+            .then((err) => {
+                console.log(err);
+            });
+            //drop the pin on the incident location. New marker color, has popup with date, time, incident, and delete button.
 
 
         },
@@ -458,7 +457,6 @@ export default {
                     <label for="address" style="display: inline-block">Address:</label> &nbsp;
                     <input type="text" id="address" v-model="selectIncidentAddress"
                         style="width: 400px; display: inline-block" /> <br>
-                    <!-- try to use a auto-filling one?? -->
                     <label for="lat" style="display: inline-block">Lat:</label> &nbsp;
                     <input type="text" id="lat" v-model="selectIncidentLat"
                         style="width: 400px; display: inline-block" /> &nbsp;
@@ -571,7 +569,7 @@ export default {
                 <br><br><br><br>
 
 
-                <CrimesResult :result_array="incidents" />
+                <CrimesResult :result_array="incidents" :selectButtonClicked="selectButtonClicked" />
 
 
                 <br><br>
@@ -686,7 +684,7 @@ export default {
                     <li>I learned everything</li>
                     <li>I learned nothing</li>
                 </ol>
-                    
+
                 <div class="cell large-12">
 
                 </div>

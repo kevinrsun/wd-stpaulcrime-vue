@@ -301,7 +301,6 @@ export default {
         },
 
         newIncident() {
-        newIncident() {
             //put together the data for the new incident then pass to uploadJSON???
 
             //Check if any of the inputs are null/empty before making the PUT request

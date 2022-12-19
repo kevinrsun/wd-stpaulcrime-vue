@@ -330,25 +330,28 @@ export default {
             if (this.new_incident_type === ''){
                 alert("Type Field Empty");
             }
-            let data = [];
-            let date_time = this.new_incident_date + "T" + this.new_incident_time;
-            data[0] = this.new_incident_casenumber;
-            data[1] = date_time;
-            data[2] = this.new_incident_code;
-            data[3] = this.new_incident_type;
-            data[4] = this.new_incident_grid;
-            data[5] = this.new_incident_neigh_id;
-            data[6] = this.new_incident_block;
+
+            let inputData = {
+                case_number: this.new_incident_casenumber,
+                date: this.new_incident_date,
+                time: this.new_incident_time,
+                code: this.new_incident_code,
+                incident: this.new_incident_type,
+                police_grid: this.new_incident_grid,
+                neighborhood_number: this.new_incident_neigh_id,
+                block: this.new_incident_block
+            };
+
+            console.log(inputData);
 
             //console.log(this.new_incident_casenumber);
-            this.uploadJSON(method, incidentReq, data)
+            this.uploadJSON(method, incidentReq, inputData)
             .then((data) => {
                 console.log(data);
-                alert("Success");    
+                alert("Success");
             })
             .then((err) =>{
                 console.log(err);
-                alert("Invalid input");
             })
         },
 

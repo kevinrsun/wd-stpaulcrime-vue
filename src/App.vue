@@ -133,7 +133,7 @@ export default {
             });
         },
 
-        filterCrimes(data) {
+        filterCrimes() {
 
             let incidentReq = "http://localhost:8000/incidents";
             let codesReq = "http://localhost:8000/codes";
@@ -397,19 +397,19 @@ export default {
 
         },
 
-        deleteButtonClicked(incident) {
+        deleteButtonClicked(incident, index, result_array) {
             let deleteReq = "http://localhost:8000/remove-incident";
             let method = "DELETE";
             let inputData = { case_number: incident.case_number };
 
             this.uploadJSON(method, deleteReq, inputData)
-            .then((data) => {
-                console.log(data);
-                alert("Success");
+            .then(() => {
+                alert("Case number has been delete");
+                result_array.splice(index, 1);
             })
-            .then((err) =>{
-                console.log(err);
-            })
+            .catch(() => {
+                alert("Case number not exist");
+            });
         }
 
     },

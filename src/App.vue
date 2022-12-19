@@ -448,10 +448,10 @@ export default {
 <template>
     <div class="grid-container">
         <div class="grid-x grid-padding-x">
-            <p :class="'cell small-4 ' + ((view === 'map') ? 'selected' : 'unselected')" @click="viewMap">Map</p>
-            <p :class="'cell small-4 ' + ((view === 'new_incident') ? 'selected' : 'unselected')"
+            <p :class="'cell small-4 ' + ((view === 'map') ? 'selected' : 'unselected')" style="background-color: blueviolet;" @click="viewMap">Map</p>
+            <p :class="'cell small-4 ' + ((view === 'new_incident') ? 'selected' : 'unselected')" style="background-color: blueviolet;"
                 @click="viewNewIncident">New Incident</p>
-            <p :class="'cell small-4 ' + ((view === 'about') ? 'selected' : 'unselected')" @click="viewAbout">About</p>
+            <p :class="'cell small-4 ' + ((view === 'about') ? 'selected' : 'unselected')" style="background-color: blueviolet;" @click="viewAbout">About</p>
         </div>
     </div>
 
@@ -461,7 +461,7 @@ export default {
             <div class="grid-x grid-padding-x">
                 <div id="leafletmap" class="cell auto"></div>
 
-                <h1 class="cell large-12" style="font-size: 42px">Coordinates:</h1>
+                <h1 class="cell large-12" style="text-decoration: underline; font-size: 48px; font-family: 'Times New Roman', Times, serif">Coordinates:</h1>
                 <!-- input box to take address/lat/longs and go button -->
                 <!-- input box/s should be updated with new location when map is changed (pan/zoom) -->
                 <!-- Clamp input values if lat/long is outside of St. Paul's bounding box -->
@@ -477,15 +477,15 @@ export default {
                     <input type="text" id="long" v-model="selectIncidentLong"
                         style="width:400px; display: inline-block" /> &nbsp; &nbsp;
                     <button type="button" id="go-button" @click="newLocation"
-                        style="border: 1px solid black; padding: 10px; background-color: #30cf3d; font-weight: bold; padding: 10px">Go</button>
+                        style="border: 1px solid black; padding: 10px; background-color: blueviolet; font-weight: bold; padding: 10px">Go</button>
                 </div>
 
 
-                <h1 class="cell large-12" style="font-size: 42px">Filters:</h1>
+                <h1 class="cell large-12" style="text-decoration: underline; font-size: 48px; font-family: 'Times New Roman', Times, serif">Filters:</h1>
                 <!-- incident_type: list of checkboxes per incident_type -->
 
                 <div class="cell large-12">
-                    <p style="text-decoration: underline; font-weight: bold;">Incident Type: </p>
+                    <p style="font-weight: bold; font-family: 'Times New Roman', Times, serif; font-size: 28px;">Incident Type: </p>
                     <input type="checkbox" id="1" name="incident-type0" v-model="filterIncidentType" value="0">
                     <label for="incident-type0"> Homicide</label>
                     <input type="checkbox" id="2" name="incident-type1" v-model="filterIncidentType" value="1">
@@ -504,7 +504,7 @@ export default {
 
                 <!-- neighborhood_name: list of checkboxes per neighborhood_name -->
                 <div class="cell large-12">
-                    <p style="text-decoration: underline; font-weight: bold;">Neighborhood Name: </p>
+                    <p style="font-weight: bold; font-family: 'Times New Roman', Times, serif; font-size: 28px;">Neighborhood Name: </p>
                     <input type="checkbox" id="1" name="neighborhood1" v-model="filterNeighborhood" value="1">
                     <label for="neighborhood1">Conway/Battlecreek/Highwood</label>
                     <input type="checkbox" id="2" name="neighborhood2" v-model="filterNeighborhood" value="2">
@@ -543,7 +543,7 @@ export default {
 
                 <!-- date range: select a start and end date (only show crimes between those dates) -->
                 <div class="cell large-4">
-                    <p style="text-decoration: underline; font-weight: bold;">Dates: </p>
+                    <p style="font-weight: bold;">Dates: </p>
                     <label for="start-date" style="display: inline-block">Start Date:</label> &nbsp;
                     <input type="text" id="start-date" v-model="filterDates[0]"
                         style="width: 300px; display:inline-block" /> <br>
@@ -555,7 +555,7 @@ export default {
 
                 <!-- time range: select a start and end time (only show crimes that occurred between those times of day) -->
                 <div class="cell large-4">
-                    <p style="text-decoration: underline; font-weight: bold;">Times: </p>
+                    <p style="font-weight: bold;">Times: </p>
                     <label for="start-time" style="display: inline-block">Start Time:</label> &nbsp;
                     <input type="text" id="start-time" v-model="filterTimes[0]"
                         style="width: 300px; display: inline-block" /> <br>
@@ -567,7 +567,7 @@ export default {
 
                 <!-- max incidents: select maximum number of incidents to retrieve / show -->
                 <div class="cell large-4">
-                    <p style="text-decoration: underline; font-weight: bold;">Max Incidents: </p>
+                    <p style="font-weight: bold; padding: 10px">Max Incidents: </p>
                     <input type="text" id="max-incidents" v-model="filterMaxIncidents" style="width: 200px">
 
                 </div>
@@ -575,7 +575,7 @@ export default {
                 <!--  submit  button -->
                 <div class="cell large-12" style="text-align: center">
                     <button type="button" @click="filterCrimes"
-                        style="border: 1px solid black; padding: 10px; background-color: #30cf3d; font-weight: bold; padding: 10px">Submit</button>
+                        style="border: 1px solid black; padding: 10px; background-color: blueviolet; font-weight: bold; padding: 10px">Submit</button>
                 </div>
 
                 <br><br><br><br>
@@ -628,7 +628,7 @@ export default {
 
 
                     <button type="button" @click="newIncident"
-                        style="border: 1px solid black; padding: 10px; background-color: #30cf3d; font-weight: bold; padding: 10px">Submit</button>
+                        style="border: 1px solid black; padding: 10px; background-color: blueviolet; font-weight: bold; padding: 10px">Submit</button>
 
                 </div>
 

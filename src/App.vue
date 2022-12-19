@@ -646,7 +646,7 @@ export default {
             <div class="grid-x grid-padding-x">
                 <div id="leafletmap" class="cell auto"></div>
 
-                <h1 class="cell large-12" style="text-decoration: underline; font-size: 48px; font-family: 'Times New Roman', Times, serif">Coordinates:</h1>
+                <h1 class="cell large-12" id="title1">Coordinates:</h1>
                 <!-- input box to take address/lat/longs and go button -->
                 <!-- input box/s should be updated with new location when map is changed (pan/zoom) -->
                 <!-- Clamp input values if lat/long is outside of St. Paul's bounding box -->
@@ -662,15 +662,16 @@ export default {
                     <input type="text" id="long" v-model="selectIncidentLong"
                         style="width:400px; display: inline-block" /> &nbsp; &nbsp;
                     <button type="button" id="go-button" @click="newLocation"
-                        style="border: 1px solid black; padding: 10px; background-color: blueviolet; font-weight: bold; padding: 10px">Go</button>
+                        style="width: 10%; border: 1px solid black; padding: 10px; background-color: blueviolet; font-weight: bold; padding: 10px">Go
+                    </button>
                 </div>
 
 
-                <h1 class="cell large-12" style="text-decoration: underline; font-size: 48px; font-family: 'Times New Roman', Times, serif">Filters:</h1>
+                <h1 class="cell large-12" id="title1">Filters:</h1>
                 <!-- incident_type: list of checkboxes per incident_type -->
 
-                <div class="cell large-12">
-                    <p style="font-weight: bold; font-family: 'Times New Roman', Times, serif; font-size: 28px;">Incident Type: </p>
+                <div class="cell large-12" style="padding-bottom: 15px">
+                    <p id="title2">Incident Type: </p>
                     <input type="checkbox" id="1" name="incident-type0" v-model="filterIncidentType" value="0">
                     <label for="incident-type0"> Homicide</label>
                     <input type="checkbox" id="2" name="incident-type1" v-model="filterIncidentType" value="1">
@@ -688,8 +689,8 @@ export default {
                 </div>
 
                 <!-- neighborhood_name: list of checkboxes per neighborhood_name -->
-                <div class="cell large-12">
-                    <p style="font-weight: bold; font-family: 'Times New Roman', Times, serif; font-size: 28px;">Neighborhood Name: </p>
+                <div class="cell large-12" style="padding-bottom: 15px">
+                    <p id="title2">Neighborhood Name: </p>
                     <input type="checkbox" id="1" name="neighborhood1" v-model="filterNeighborhood" value="1">
                     <label for="neighborhood1">Conway/Battlecreek/Highwood</label>
                     <input type="checkbox" id="2" name="neighborhood2" v-model="filterNeighborhood" value="2">
@@ -727,8 +728,8 @@ export default {
                 </div>
 
                 <!-- date range: select a start and end date (only show crimes between those dates) -->
-                <div class="cell large-4">
-                    <p style="font-weight: bold;">Dates: </p>
+                <div class="cell large-4" style="padding-bottom: 15px">
+                    <p id="title2">Dates: </p>
                     <label for="start-date" style="display: inline-block">Start Date:</label> &nbsp;
                     <input type="text" id="start-date" v-model="filterDates[0]"
                         style="width: 300px; display:inline-block" /> <br>
@@ -740,7 +741,7 @@ export default {
 
                 <!-- time range: select a start and end time (only show crimes that occurred between those times of day) -->
                 <div class="cell large-4">
-                    <p style="font-weight: bold;">Times: </p>
+                    <p id="title2">Times: </p>
                     <label for="start-time" style="display: inline-block">Start Time:</label> &nbsp;
                     <input type="text" id="start-time" v-model="filterTimes[0]"
                         style="width: 300px; display: inline-block" /> <br>
@@ -752,16 +753,18 @@ export default {
 
                 <!-- max incidents: select maximum number of incidents to retrieve / show -->
                 <div class="cell large-4">
-                    <p style="font-weight: bold; padding: 10px">Max Incidents: </p>
-                    <input type="text" id="max-incidents" v-model="filterMaxIncidents" style="width: 200px">
-
+                    <p id="title2">Max Incidents: </p>
+                    <label for="max-incidents" style="display: inline-block">Amount:</label> &nbsp;
+                    <input type="text" id="max-incidents" v-model="filterMaxIncidents" style="width: 300px">
+                    <!--  submit  button -->
+                    <div>
+                        <button type="button" @click="filterCrimes"
+                            style="width: 300px; ; display: inline-block; border: 1px solid black; padding: 10px; margin-top: 20px; background-color: blueviolet; font-weight: bold;">Submit
+                        </button>
+                    </div>
                 </div>
 
-                <!--  submit  button -->
-                <div class="cell large-12" style="text-align: center">
-                    <button type="button" @click="filterCrimes"
-                        style="border: 1px solid black; padding: 10px; background-color: blueviolet; font-weight: bold; padding: 10px">Submit</button>
-                </div>
+
 
                 <br><br><br><br>
 
@@ -940,4 +943,17 @@ export default {
     text-align: center;
     cursor: pointer;
 }
+
+#title1 {
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 48px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#title2 {
+    font-weight: bold;
+    font-size: 28px;
+}
+
 </style>

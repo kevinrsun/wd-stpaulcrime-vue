@@ -2,7 +2,6 @@
 export default {
     props: {
         result_array: Array,
-        code_types: Array,
         selectButtonClicked: Function,
         deleteButtonClicked: Function
     },
@@ -30,7 +29,7 @@ export default {
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(incident, index) in result_array"> <!-- makes table row for each incident result -->
+            <tr v-for="(incident, index) in result_array" :class="incident.category"> <!-- makes table row for each incident result :class="convertCodeToType" -->
                 <td><button type="button" @click="selectButtonClicked(incident)" :id="'select-incident-' + incident.case_number" style="border: 1px solid black; padding: 5px; background-color: #30cf3d; font-weight: bold;">Select</button></td>
 
                 <!-- table data for the case number -->
@@ -66,14 +65,26 @@ export default {
 <!-- Style the background color of rows in the table to categorize crimes as "violent crimes" (crimes against another person), "property crimes" (crimes against a person's or business' property), or "other crimes" (anything else) -->
 <style>
     /*<!-- homicide, assault, rape -->*/
-    .homicide {
-        background-color: rgb(126, 20, 10); 
+    .HomeicideCodes {
+        background-color: rgb(254, 40, 21) !important; 
     }   
-    .assault {
-        background-color: rgb(126, 20, 10);
+    .AssaultCodes {
+        background-color: rgb(214, 99, 11) !important;
     }
-    .rape{
-        background-color: rgb(126, 20, 10);
+    .RapeCodes{
+        background-color: rgb(227, 25, 93) !important;
+    }
+    .TheftBurglaryRobberyCodes{
+        background-color: rgb(253, 237, 61) !important;
+    }
+    .PropertyDamageCodes{
+        background-color: rgb(43, 221, 135) !important;
+    }
+    .NarcoticsCodes{
+        background-color: rgb(3, 242, 11) !important;
+    }
+    .OtherCodes{
+        background-color: rgb(255, 255, 255) !important;
     }
     
 </style>

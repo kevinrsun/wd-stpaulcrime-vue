@@ -147,7 +147,7 @@ export default {
                     query = query + "," + this.filterNeighborhood[i];
                 }
             }
-            if (this.filterIncidentType > 0) {
+            if (this.filterIncidentType.length > 0) {
                 if (query !== "") {
                     query = query + "&code=";
                 } else {
@@ -232,6 +232,12 @@ export default {
 
                     // Update incidents to use neighborhood_name rather than neighborhood_number, and incident_type rather than code
                     this.incidents.map((incident) => {
+                        // Add field to incident for crime category
+                        for (let i = 0; i < Object.keys(this.codeTypes).length; i++) {
+                            if (Object.values(this.codeTypes)[i].split(',').includes(incident.code.toString())) {
+                                incident.category = Object.keys(this.codeTypes)[i];
+                            }
+                        }
                         // Change code to incident_type
                         for (let i = 0; i < this.codes.length; i++) {
                             if (incident.code == this.codes[i].code) {
@@ -759,9 +765,8 @@ export default {
 
                 <br><br><br><br>
 
-                <CrimesResult :result_array="incidents" :code_types="codesTypes"
-                    :selectButtonClicked="selectButtonClicked" :deleteButtonClicked="deleteButtonClicked" />
-
+                <CrimesResult :result_array="incidents" :selectButtonClicked="selectButtonClicked" :deleteButtonClicked="deleteButtonClicked"/>
+                
                 <br><br>
             </div>
         </div>
@@ -851,7 +856,7 @@ export default {
                     <!-- photo and short bio-->
                     <!-- This can be on the API and we get using a request url -->
                     <!-- <img src="images/" alt="Kevin" style="width: 250px"> -->
-                    <p>fkadhjbfgkahsdbgfkjhasbfkhabsfkjhbas</p>
+                    <p>Also a Senior majoring in Computer Science. My favorite color is purple, I don't really like winter, I play guitar & video games. 🥶</p>
 
                 </div>
 

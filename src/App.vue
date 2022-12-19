@@ -893,7 +893,7 @@ export default {
                     <p style="font-size: 30px; margin: auto; text-align: center; font-weight: bold;">Jack Landwer</p>
                     <!-- photo and short bio-->
                     <!-- This can be on the API and we get using a request url -->
-                    <img id="picture" src="images/jackPic.jpeg" alt="Jack">
+                    <img id="picture" src="https://i.imgur.com/e7uAGbb.jpg" alt="Jack">
                     <p>Senior at St. Thomas majoring in Computer Science. In my free time I like to snowboard, golf, and
                         play soccer.</p>
 
@@ -903,7 +903,7 @@ export default {
                     <p style="font-size: 30px; margin: auto; text-align: center; font-weight: bold;">Kevin Sun</p>
                     <!-- photo and short bio-->
                     <!-- This can be on the API and we get using a request url -->
-                    <img id="picture" src="../images/kevPic.jpg" alt="Kevin">
+                    <img id="picture" src="https://i.imgur.com/Sihx1Oo.jpg" alt="Kevin">
                     <p>Also a Senior majoring in Computer Science. My favorite color is purple, I don't really like winter, I play guitar & video games. 🥶</p>
 
                 </div>
@@ -912,7 +912,7 @@ export default {
                     <p style="font-size: 30px; margin: auto; text-align: center; font-weight: bold;">Sam McEnery</p>
                     <!-- photo and short bio-->
                     <!-- This can be on the API and we get using a request url -->
-                    <img id="picture" src="../images/samPic.jpg" alt="Sam">
+                    <img id="picture" src="https://i.imgur.com/8SqBKjZ.jpg" alt="Sam">
                     <p>My name is Sam McEnery, I am a computer science major here at St. Thomas. I am originally from
                         Geneva, Illinois--a Suburb of Chicago. I've played Hockey all my life so I enjoy playing pond
                         hockey when the weather gets cold enough.</p>

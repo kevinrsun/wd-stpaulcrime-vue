@@ -30,7 +30,7 @@ export default {
         </thead>
         <tbody>
             <tr v-for="(incident, index) in result_array" :class="incident.category"> <!-- makes table row for each incident result :class="convertCodeToType" -->
-                <td><button type="button" @click="selectButtonClicked(incident)" :id="'select-incident-' + incident.case_number" style="border: 1px solid black; padding: 5px; background-color: #30cf3d; font-weight: bold;">Select</button></td>
+                <td><button type="button" @click="selectButtonClicked(incident)" id="select-incident" style="border: 1px solid black; padding: 5px; background-color: #30cf3d; font-weight: bold;">Select</button></td>
 
                 <!-- table data for the case number -->
                 <td>{{ incident.case_number }}</td>
@@ -53,7 +53,7 @@ export default {
                 <td>{{ incident.block }}</td> <!-- REPLACE THE X'S IN THE NUMBER ADDRESS WITH 0'S -->
 
                 <!-- DELETE BUTTON FOR EACH CRIME IN THE TABLE, CLICKING SHOULD DELETE REQUEST TO REMOVE INCIDENT FROM DATABASE...  -->
-                <td><button type="button" @click="deleteButtonClicked(incident, index, result_array)" :id="'delete-incident-' + incident.case_number" style="border: 1px solid black; padding: 5px; background-color: red; font-weight: bold;">Delete</button></td>
+                <td><button type="button" @click="deleteButtonClicked(incident, index, result_array)" id="delete-incident" style="border: 1px solid black; padding: 5px; background-color: red; font-weight: bold;">Delete</button></td>
 
             </tr>
         </tbody>
@@ -85,6 +85,16 @@ export default {
     }
     .OtherCodes{
         background-color: rgb(255, 255, 255) !important;
+    }
+    #select-incident{
+        color: white;
+        border: solid 3px black !important;
+        background-color: blueviolet !important;
+    }
+    #delete-incident{
+        color: white;
+        border: solid 3px black !important;
+        background-color: rgb(255, 24, 24) !important;
     }
     
 </style>

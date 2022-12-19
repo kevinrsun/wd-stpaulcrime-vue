@@ -212,11 +212,6 @@ export default {
                     }
                 }
             }
-            if (query !== "") {
-                query = query + "&limit=" + this.filterMaxIncidents;
-            } else {
-                query = query + "?limit=" + this.filterMaxIncidents;
-            }
 
             incidentReq = incidentReq + query;
             console.log("incidentReq: " + incidentReq);
@@ -230,77 +225,56 @@ export default {
                     this.codes = data[1];
                     this.neighborhoods = data[2];
 
-                    if (true) { //if true to always check
-                        let bounds = this.leaflet.map.getBounds();
-                        let screenNW = bounds.getNorthWest(); //lat-max, long-max
-                        let screenSE = bounds.getSouthEast(); //lat-min, long-min
-                        let screenHoods = []; //contains hoods within map coords.
-                        console.log(screenNW);
-                        console.log(screenSE);
-                        for (let i = 0; i < this.neighborhoods.length; i++) {
-                            if(screenNW.lat > this.leaflet.neighborhood_markers[i].location[1]){ //check max lat
-                                if(screenSE.lat < this.leaflet.neighborhood_markers[i].location[1]){ //check min lat
-                                    if(screenNW.lng > this.leaflet.neighborhood_markers[i].location[2]){ //check max long
-                                        if(screenSE.lng < this.leaflet.neighborhood_markers[i].location[2]){ //check min long
-                                            screenHoods.push(this.neighborhoods[i].id)
-                                        }
+                    
+                    let screenHoods = []; //contains hoods within map coords.
+
+                    let bounds = this.leaflet.map.getBounds();
+                    let screenNW = bounds.getNorthWest(); //lat-max, long-max
+                    let screenSE = bounds.getSouthEast(); //lat-min, long-min
+
+                    for (let i = 0; i < this.neighborhoods.length; i++) {
+
+                        if(screenNW.lat > this.leaflet.neighborhood_markers[i].location[0]){ //check max lat
+                            if(screenSE.lat < this.leaflet.neighborhood_markers[i].location[0]){ //check min lat
+                                if(screenNW.lng < this.leaflet.neighborhood_markers[i].location[1]){ //check max long
+                                    if(screenSE.lng > this.leaflet.neighborhood_markers[i].location[1]){ //check min long
+                                        screenHoods.push(this.neighborhoods[i].id)
                                     }
                                 }
                             }
                         }
-                        console.log(screenHoods);
-                        let greenIcon = new L.icon({
-                            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-                            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                            iconSize: [25, 41],
-                            iconAnchor: [12, 41],
-                            popupAnchor: [1, -34],
-                            shadowSize: [41, 41]
-                        });
-                        //loop and get incidents in visible hoods
-                        for(let i = 0; i < this.incidents.length; i++){
-                            if(screenHoods.includes(this.incidents[i].neighborhood_number)){ //if incident in visible hood
-                                let addy = this.incidents[i].block.toString();
-                                let parseAddyNum = addy.split(" ", 1);
-                                let addyNumber = parseAddyNum[0].replaceAll('X', 0);
-                                let addr = addy.substring(addy.indexOf(' ') + 1);
-                                let fullAddy = 'https://nominatim.openstreetmap.org/search?q=' + addyNumber + ' ' + addr + ', St. Paul MN' + '&format=json';
-                                this.getJSON(fullAddy)
-                                    .then((data) => {
-                                        console.log(data);
-                                        let markerPin = new L.Marker(new L.LatLng(this.data[0].lat, this.data[0].lng), { icon: greenIcon });
-                                        let markerPopup = L.popup().setContent('<p>Incident: ' + this.incidents[i].code + '</p>\n' + '<p>Date: ' + this.incidents[i].date + '</p>\n' + '<p>Time: ' + this.incidents[i].time + '<p>');
-                                        markerPin.bindPopup(markerPopup); //.openPopup();
-                                        this.leaflet.map.addLayer(markerPin);
-                                    })
-                                    .then((err) => {
-                                        console.log(err);
-                                    });
-                            }
-                        }
                     }
+                    console.log(screenHoods);
 
+                    let count = 0;
                     // Update incidents to use neighborhood_name rather than neighborhood_number, and incident_type rather than code
+                    let filteredItems = [];
                     this.incidents.map((incident) => {
-                        // Add field to incident for crime category
-                        for (let i = 0; i < Object.keys(this.codeTypes).length; i++) {
-                            if (Object.values(this.codeTypes)[i].split(',').includes(incident.code.toString())) {
-                                incident.category = Object.keys(this.codeTypes)[i];
+                        if(screenHoods.includes(incident.neighborhood_number) && count < this.filterMaxIncidents) {
+                            // Add field to incident for crime category
+                            for (let i = 0; i < Object.keys(this.codeTypes).length; i++) {
+                                if (Object.values(this.codeTypes)[i].split(',').includes(incident.code.toString())) {
+                                    incident.category = Object.keys(this.codeTypes)[i];
+                                }
                             }
-                        }
-                        // Change code to incident_type
-                        for (let i = 0; i < this.codes.length; i++) {
-                            if (incident.code == this.codes[i].code) {
-                                incident.code = this.codes[i].type;
+                            // Change code to incident_type
+                            for (let i = 0; i < this.codes.length; i++) {
+                                if (incident.code == this.codes[i].code) {
+                                    incident.code = this.codes[i].type;
+                                }
                             }
-                        }
-                        // Change neighborhood_number to neighborhood_name
-                        for (let i = 0; i < this.neighborhoods.length; i++) {
-                            if (incident.neighborhood_number == this.neighborhoods[i].id) {
-                                incident.neighborhood_number = this.neighborhoods[i].name;
+                            // Change neighborhood_number to neighborhood_name
+                            for (let i = 0; i < this.neighborhoods.length; i++) {
+                                if (incident.neighborhood_number == this.neighborhoods[i].id) {
+                                    incident.neighborhood_number = this.neighborhoods[i].name;
+                                }
                             }
+                            filteredItems[count] = incident;
+                            count++;
                         }
                     });
+
+                    this.incidents = filteredItems;
                 })
                 .then((err) => {
                     console.log(err);
@@ -344,8 +318,8 @@ export default {
         },
 
         updatedLocation(data) {
-            this.leaflet.center.lat = data.lat;
-            this.leaflet.center.lng = data.lon;
+            this.leaflet.center.lat = data[0].lat;
+            this.leaflet.center.lng = data[0].lon;
             this.leaflet.map.flyTo([this.leaflet.center.lat, this.leaflet.center.lng], 17); // "this.leaflet.map.panTo" also works
         },
 
@@ -683,10 +657,10 @@ export default {
 <template>
     <div class="grid-container">
         <div class="grid-x grid-padding-x">
-            <p :class="'cell small-4 ' + ((view === 'map') ? 'selected' : 'unselected')" style="background-color: blueviolet;" @click="viewMap">Map</p>
-            <p :class="'cell small-4 ' + ((view === 'new_incident') ? 'selected' : 'unselected')" style="background-color: blueviolet;"
+            <p id="navItem" :class="'cell small-4 ' + ((view === 'map') ? 'selected' : 'unselected')" style="background-color: blueviolet;" @click="viewMap">Map</p>
+            <p id="navItem" :class="'cell small-4 ' + ((view === 'new_incident') ? 'selected' : 'unselected')" style="background-color: blueviolet;"
                 @click="viewNewIncident">New Incident</p>
-            <p :class="'cell small-4 ' + ((view === 'about') ? 'selected' : 'unselected')" style="background-color: blueviolet;" @click="viewAbout">About</p>
+            <p id="navItem" :class="'cell small-4 ' + ((view === 'about') ? 'selected' : 'unselected')" style="background-color: blueviolet;" @click="viewAbout">About</p>
         </div>
     </div>
 
@@ -711,7 +685,7 @@ export default {
                     <label for="long" style="display: inline-block">Long:</label> &nbsp;
                     <input type="text" id="long" v-model="selectIncidentLong"
                         style="width:400px; display: inline-block" /> &nbsp; &nbsp;
-                    <button type="button" id="go-button" @click="newLocation"
+                    <button type="button" id="button" @click="newLocation"
                         style="width: 10%; border: 1px solid black; padding: 10px; background-color: blueviolet; font-weight: bold; padding: 10px">Go
                     </button>
                 </div>
@@ -808,7 +782,7 @@ export default {
                     <input type="text" id="max-incidents" v-model="filterMaxIncidents" style="width: 300px">
                     <!--  submit  button -->
                     <div>
-                        <button type="button" @click="filterCrimes"
+                        <button id="button" type="button" @click="filterCrimes"
                             style="width: 300px; ; display: inline-block; border: 1px solid black; padding: 10px; margin-top: 20px; background-color: blueviolet; font-weight: bold;">Submit
                         </button>
                     </div>
@@ -817,6 +791,27 @@ export default {
 
 
                 <br><br><br><br>
+
+                    <div class="cell large-4">
+                        <p id="title2">Incidents Color Types</p>
+                    </div>
+                    
+
+
+                <br><br><br><br>
+
+                <thead id="key">
+                    <tr>
+                        <td id="incident0">Homicide</td>
+                        <td id="incident1">Assault</td>
+                        <td id="incident2">Rape</td>
+                        <td id="incident3">Theft / Burglary / Robbery</td>
+                        <td id="incident4">Property Damage</td>
+                        <td id="incident5">Narcotics</td>
+                        <td id="incident6">Other</td>
+                    </tr>
+                </thead>
+ 
 
                 <CrimesResult :result_array="incidents" :selectButtonClicked="selectButtonClicked" :deleteButtonClicked="deleteButtonClicked"/>
                 
@@ -830,7 +825,7 @@ export default {
         <!-- Replace this with your actual form: can be done here or by making a new component -->
         <div class="grid-container">
             <div class="grid-x grid-padding-x">
-                <h1 class="cell auto" style="text-align: center">New Incident Form</h1>
+                <h1 class="cell auto" id="title1" style="text-align: center">New Incident Form</h1>
 
                 <!-- Ensure all fields are filled out before submitting request, otherwise show some error message -->
 
@@ -888,36 +883,36 @@ export default {
     <div v-if="view === 'about'">
         <!-- Replace this with your actual about the project content: can be done here or by making a new component -->
         <div class="grid-container">
-            <div class="grid-x grid-padding-x">
+            <div class="grid-x grid-padding-x" style="border: 3px solid black">
                 <div class="cell large-12">
-                    <h1>About the Project</h1>
+                    <h1 class="cell auto" id="title1" style="text-align: center;">About the Project</h1>
                 </div>
 
-                <h1 class="cell large-12" style="font-size: 40px">Team:</h1>
-                <div class="cell large-4" style="border: 1px solid black">
-                    <p style="font-size: 25px; margin: auto; text-align: center;">Jack Landwer</p>
+                <h1 class="cell large-12" id="title2" style="font-size: 40px">Team:</h1>
+                <div class="cell large-4" style="border: 2px solid black">
+                    <p style="font-size: 30px; margin: auto; text-align: center; font-weight: bold;">Jack Landwer</p>
                     <!-- photo and short bio-->
                     <!-- This can be on the API and we get using a request url -->
-                    <!-- <img src="images/jackPic.jpeg" alt="Jack" style="width: 250px"> -->
+                    <img id="picture" src="images/jackPic.jpeg" alt="Jack">
                     <p>Senior at St. Thomas majoring in Computer Science. In my free time I like to snowboard, golf, and
                         play soccer.</p>
 
                 </div>
 
-                <div class="cell large-4" style="border: 1px solid black">
-                    <p style="font-size: 25px; margin: auto; text-align: center;">Kevin</p>
+                <div class="cell large-4" style="border: 2px solid black">
+                    <p style="font-size: 30px; margin: auto; text-align: center; font-weight: bold;">Kevin Sun</p>
                     <!-- photo and short bio-->
                     <!-- This can be on the API and we get using a request url -->
-                    <!-- <img src="images/" alt="Kevin" style="width: 250px"> -->
+                    <img id="picture" src="../images/kevPic.jpg" alt="Kevin">
                     <p>Also a Senior majoring in Computer Science. My favorite color is purple, I don't really like winter, I play guitar & video games. 🥶</p>
 
                 </div>
 
-                <div class="cell large-4" style="border: 1px solid black">
-                    <p style="font-size: 25px; margin: auto; text-align: center;">Sam McEnery</p>
+                <div class="cell large-4" style="border: 2px solid black">
+                    <p style="font-size: 30px; margin: auto; text-align: center; font-weight: bold;">Sam McEnery</p>
                     <!-- photo and short bio-->
                     <!-- This can be on the API and we get using a request url -->
-                    <!-- <img src="images/" alt="Sam" style="width: 250px"> -->
+                    <img id="picture" src="../images/samPic.jpg" alt="Sam">
                     <p>My name is Sam McEnery, I am a computer science major here at St. Thomas. I am originally from
                         Geneva, Illinois--a Suburb of Chicago. I've played Hockey all my life so I enjoy playing pond
                         hockey when the weather gets cold enough.</p>
@@ -925,12 +920,12 @@ export default {
 
                 <!-- maybe add some horizontal lines to separate the sections??-->
 
-                <h1 class="cell large-12" style="font-size: 40px">Description of tools:</h1>
+                <h1 class="cell large-12" id="title2" style="font-size: 40px">Description of tools:</h1>
                 <ol>
                     <li>In the Map section there are many tools we can use. First, we can look up crime by address, this
                         is done by typing in the specified address into the search bar. Next, we can also find crimes by
                         latitude and longitude through the same process. These search results can be filtered by
-                        checking the boxes of the specified crime type, neighborhood, or date and time in which it
+                        checking the boxes of the specified crime type, neighborhood, or date & time in which it
                         occurred.</li>
                     <li>Once a search is requested, the table populates with all the crimes with the specified
                         parameters with colors coordinating the violence of each crime.</li>
@@ -943,13 +938,17 @@ export default {
                 </div>
 
 
-                <h1 class="cell large-12" style="font-size: 40px">Video of the application:</h1>
+                <h1 class="cell large-12" id="title2" style="font-size: 40px">Video of the application:</h1>
+                <video width="1150" height="647" controls>
+                <source src="../images/Project 4 Video.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+                </video>
                 <div class="cell large-12">
 
                 </div>
 
 
-                <h1 class="cell large-12" style="font-size: 40px">Six interesting findings:</h1>
+                <h1 class="cell large-12" id="title2" style="font-size: 40px">Six interesting findings:</h1>
                 <ol>
                     <li>Making a PUT form through user input correctly was very fascinating to learn.</li>
                     <li>Using longitude and latitude to traverse the program through a map.</li>
@@ -974,24 +973,51 @@ export default {
 </template>
 
 <style>
+body {
+    color: rgb(0, 0, 0);
+    background-color: rgb(194, 217, 255);
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif'Monaco','Lato','Montserrat', Arial, 'Times New Roman' serif, Arial, sans-serif;
+    background-image: url("img/treefix.jpg");
+    padding: 1rem;
+}
+
 #leafletmap {
     height: 500px;
 }
 
 .selected {
     background-color: rgb(10, 100, 126);
-    color: white;
-    border: solid 1px white;
+    color: black;
+    border: solid 2px black;
     text-align: center;
     cursor: pointer;
 }
 
 .unselected {
     background-color: rgb(200, 200, 200);
-    color: black;
-    border: solid 1px white;
+    color: white;
+    border: solid 2px black;
     text-align: center;
     cursor: pointer;
+}
+
+#navItem {
+    font-weight: bold;
+    font-size: 30px;
+}
+
+div p:hover {
+    color: black;
+}
+
+#button {
+    font-weight: bold;
+    color: white;
+    border: solid 3px black !important;
+}
+
+button:hover {
+    color: black !important;
 }
 
 #title1 {
@@ -1004,6 +1030,39 @@ export default {
 #title2 {
     font-weight: bold;
     font-size: 28px;
+}
+
+#incident0 {
+    background-color: rgb(254, 40, 21) !important; 
+}   
+#incident1 {
+    background-color: rgb(214, 99, 11) !important;
+}
+#incident2 {
+    background-color: rgb(227, 25, 93) !important;
+}
+#incident3 {
+    background-color: rgb(253, 237, 61) !important;
+}
+#incident4 {
+    background-color: rgb(43, 221, 135) !important;
+}
+#incident5 {
+    background-color: rgb(3, 242, 11) !important;
+}
+#incident6 {
+    background-color: rgb(255, 255, 255) !important;
+}
+
+#key {
+    border: 0px;
+    padding: 0px !important;
+    background-color: rgb(194, 217, 255);
+    height: 50px;
+}
+
+#picture {
+    text-align: center;
 }
 
 </style>

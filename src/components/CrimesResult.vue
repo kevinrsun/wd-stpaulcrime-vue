@@ -2,7 +2,8 @@
 export default {
     props: {
         result_array: Array,
-        selectButtonClicked: Function
+        selectButtonClicked: Function,
+        deleteButtonClicked: Function
     },
     watch: {
         result_array() {
@@ -52,7 +53,7 @@ export default {
                 <td>{{ incident.block }}</td> <!-- REPLACE THE X'S IN THE NUMBER ADDRESS WITH 0'S -->
 
                 <!-- DELETE BUTTON FOR EACH CRIME IN THE TABLE, CLICKING SHOULD DELETE REQUEST TO REMOVE INCIDENT FROM DATABASE...  -->
-                <td><button type="button" @click="deleteButtonClicked" :id="'delete-incident-' + incident.case_number" style="border: 1px solid black; padding: 5px; background-color: red; font-weight: bold;">Delete</button></td>
+                <td><button type="button" @click="this.deleteButtonClicked(incident)" :id="'delete-incident-' + incident.case_number" style="border: 1px solid black; padding: 5px; background-color: red; font-weight: bold;">Delete</button></td>
 
             </tr>
         </tbody>

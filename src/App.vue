@@ -25,6 +25,31 @@ export default {
             selectIncidentAddress: "",
             selectIncidentLat: "",
             selectIncidentLong: "",
+            codeTypes: {
+                HomeicideCodes: "100,110,120",
+                AssaultCodes:   "400,410,411,412,420,421,422,430,431,432,440,441,442,450,451,\
+                                452,453,810,861,862,863", // Code 810 was spelt Asasult
+                RapeCodes: "210,220",
+                TheftBurglaryRobberyCodes:  "300,311,312,313,314,321,322,323,324,331,333,\
+                                            334,341,342,343,344,351,352,353,354,361,363,\
+                                            364,371,372,373,374,500,510,511,513,515,516,\
+                                            520,521,523,525,526,530,531,533,535,536,540,\
+                                            541,543,545,546,550,551,553,555,556,560,561,\
+                                            563,565,566,600,603,611,612,613,621,622,623,\
+                                            630,631,632,633,640,641,642,643,651,652,653,\
+                                            661,662,663,671,672,673,681,682,683,691,692,\
+                                            693,700,710,711,712,720,721,722,730,731,732",
+
+                PropertyDamageCodes:    "900,901,903,905,911,913,915,921,922,923,925,931,\
+                                        933,941,942,951,961,971,972,975,981,982,1400,1401,\
+                                        1410,1415,1416,1420,1425,1426,1430,1435,1436",
+
+                NarcoticsCodes: "1800,1810,1811,1812,1813,1814,1815,1820,1822,1823,1824,\
+                                1825,1830,1835,1840,1841,1842,1843,1844,1845,1850,1855,\
+                                1860,1865,1870,1880,1885",
+
+                OtherCodes: "614,2619,3100,9954,9959,9986",
+            },
             leaflet: {
                 map: null,
                 center: {
@@ -129,38 +154,14 @@ export default {
                     query = "?code=";
                 }
 
-                let HomeicideCodes = "100,110,120";
-                let AssaultCodes = "400,410,411,412,420,421,422,430,431,432,440,441,442,450,451,\
-                                    452,453,810,861,862,863"; // Code 810 was spelt Asasult
-                let RapeCodes = "210,220";
-                let TheftBurglaryRobberyCodes = "300,311,312,313,314,321,322,323,324,331,333,\
-                                                334,341,342,343,344,351,352,353,354,361,363,\
-                                                364,371,372,373,374,500,510,511,513,515,516,\
-                                                520,521,523,525,526,530,531,533,535,536,540,\
-                                                541,543,545,546,550,551,553,555,556,560,561,\
-                                                563,565,566,600,603,611,612,613,621,622,623,\
-                                                630,631,632,633,640,641,642,643,651,652,653,\
-                                                661,662,663,671,672,673,681,682,683,691,692,\
-                                                693,700,710,711,712,720,721,722,730,731,732";
-
-                let PropertyDamageCodes = "900,901,903,905,911,913,915,921,922,923,925,931,\
-                                            933,941,942,951,961,971,972,975,981,982,1400,1401,\
-                                            1410,1415,1416,1420,1425,1426,1430,1435,1436";
-
-                let NarcoticsCodes = "1800,1810,1811,1812,1813,1814,1815,1820,1822,1823,1824,\
-                                        1825,1830,1835,1840,1841,1842,1843,1844,1845,1850,1855,\
-                                        1860,1865,1870,1880,1885";
-
-                let OtherCodes = "614,2619,3100,9954,9959,9986";
-
                 let codesArr = [
-                    HomeicideCodes,
-                    AssaultCodes,
-                    RapeCodes,
-                    TheftBurglaryRobberyCodes,
-                    PropertyDamageCodes,
-                    NarcoticsCodes,
-                    OtherCodes
+                    this.codeTypes.HomeicideCodes,
+                    this.codeTypes.AssaultCodes,
+                    this.codeTypes.RapeCodes,
+                    this.codeTypes.TheftBurglaryRobberyCodes,
+                    this.codeTypes.PropertyDamageCodes,
+                    this.codeTypes.NarcoticsCodes,
+                    this.codeTypes.OtherCodes
                 ];
 
                 for (let i = 0; i < this.filterIncidentType.length; i++) {
@@ -396,11 +397,19 @@ export default {
 
         },
 
-        deleteButtonClicked(data, case_number) {
-            console.log(case_number);
+        deleteButtonClicked(incident) {
+            let deleteReq = "http://localhost:8000/remove-incident";
+            let method = "DELETE";
+            let inputData = { case_number: incident.case_number };
 
-
-
+            this.uploadJSON(method, deleteReq, inputData)
+            .then((data) => {
+                console.log(data);
+                alert("Success");
+            })
+            .then((err) =>{
+                console.log(err);
+            })
         }
 
     },
@@ -571,9 +580,7 @@ export default {
 
                 <br><br><br><br>
 
-
-                <CrimesResult :result_array="incidents" :selectButtonClicked="selectButtonClicked" />
-
+                <CrimesResult :result_array="incidents" :selectButtonClicked="selectButtonClicked" :deleteButtonClicked="deleteButtonClicked"/>
 
                 <br><br>
             </div>

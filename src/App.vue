@@ -250,7 +250,7 @@ export default {
                 });
         },
 
-        newLocation(data) {
+        newLocation() {
             let query = "";
 
             if(this.selectIncidentAddress !== "") {
@@ -292,7 +292,7 @@ export default {
             this.leaflet.map.flyTo([this.leaflet.center.lat, this.leaflet.center.lng], 17); // "this.leaflet.map.panTo" also works
         },
 
-        mapPanning() {
+        mapPanOrZoom() {
             this.leaflet.center.lat = this.leaflet.map.getCenter().lat;
             this.leaflet.center.lng = this.leaflet.map.getCenter().lng;
 
@@ -428,7 +428,8 @@ export default {
         this.selectIncidentLong = this.leaflet.center.lng;
 
         // Map events
-        this.leaflet.map.on('dragend', this.mapPanning)
+        this.leaflet.map.on('dragend', this.mapPanOrZoom);
+        this.leaflet.map.on('zoom', this.mapPanOrZoom);
     }
 }
 </script>

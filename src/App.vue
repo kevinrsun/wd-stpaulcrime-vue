@@ -13,6 +13,14 @@ export default {
             filterIncidentType: [],
             filterDates: [],
             filterTimes: [],
+            new_incident_casenumber: null,
+            new_incident_date: "",
+            new_incident_time: "",
+            new_incident_code: null,
+            new_incident_type: "",
+            new_incident_grid: null,
+            new_incident_neigh_id: null,
+            new_incident_block: "",
             filterMaxIncidents: 1000,
             selectIncidentAddress: "",
             selectIncidentLat: "",
@@ -289,13 +297,56 @@ export default {
             this.leaflet.center.lng = data.lon;
         },
 
-        newIncident(data) {
+        newIncident() {
             //put together the data for the new incident then pass to uploadJSON???
 
             //Check if any of the inputs are null/empty before making the PUT request
+            let incidentReq = "http://localhost:8000/new-incident";
+            let method = 'PUT';
+            if (this.new_incident_casenumber === null){
+                alert("Case Number Field Empty");
+            } 
+            if (this.new_incident_date === ''){
+                alert("Date Field Empty");
+            } 
+            if (this.new_incident_block === ''){
+                alert("Block Field Empty");
+            }
+            if (this.new_incident_code === null){
+                alert("Code Field Empty");
+            }
+            if (this.new_incident_grid === null){
+                alert("Grid Field Empty");
+            }
+            if (this.new_incident_neigh_id === null){
+                alert("Neighbourhood ID Field Empty");
+            }
+            if (this.new_incident_time === ''){
+                alert("Time Field Empty");
+            }
+            if (this.new_incident_type === ''){
+                alert("Type Field Empty");
+            }
+            let data = [];
+            let date_time = this.new_incident_date + "T" + this.new_incident_time;
+            data[0] = this.new_incident_casenumber;
+            data[1] = date_time;
+            data[2] = this.new_incident_code;
+            data[3] = this.new_incident_type;
+            data[4] = this.new_incident_grid;
+            data[5] = this.new_incident_neigh_id;
+            data[6] = this.new_incident_block;
 
-
-
+            //console.log(this.new_incident_casenumber);
+            this.uploadJSON(method, incidentReq, data)
+            .then((data) => {
+                console.log(data);
+                alert("Success");    
+            })
+            .then((err) =>{
+                console.log(err);
+                alert("Invalid input");
+            })
         },
 
         selectButtonClicked(data, case_number) {
@@ -536,31 +587,31 @@ export default {
                 <!-- THINK ABOUT IF WE WANT TEXT BOXES FOR DROPDOWN MENUS FOR SOME OF THESE... -->
                 <div class="cell large-12" style="text-align: center">
                     <label for="case-number" style="display: inline-block">Case Number:</label> &nbsp;
-                    <input type="text" id="case-number" style="width: 300px; display: inline-block"> <br>
+                    <input type="text" id="case-number" style="width: 300px; display: inline-block" v-model="new_incident_casenumber"> <br>
 
                     <label for="date" style="display: inline-block">Date:</label> &nbsp;
-                    <input type="text" id="date" style="width: 300px; display: inline-block"> <br>
+                    <input type="text" id="date" style="width: 300px; display: inline-block" v-model="new_incident_date"> <br>
                     <!-- show the correct format as faded text in box?? -->
 
                     <label for="time" style="display: inline-block">Time:</label> &nbsp;
-                    <input type="text" id="time" style="width: 300px; display: inline-block"> <br>
+                    <input type="text" id="time" style="width: 300px; display: inline-block" v-model="new_incident_time"> <br>
                     <!-- show the correct format as faded text in box?? -->
 
                     <label for="incident-code" style="display: inline-block">Code:</label> &nbsp;
-                    <input type="text" id="incident-code" style="width: 300px; display: inline-block"> <br>
+                    <input type="text" id="incident-code" style="width: 300px; display: inline-block" v-model="new_incident_code"> <br>
 
                     <!-- do we want to have the code and the incident type linked somehow?? like a dropdown for incident type that auto populates code? -->
                     <label for="incident-type" style="display:inline-block">Incident Type:</label> &nbsp;
-                    <input type="text" id="incident-type" style="width: 300px; display: inline-block"> <br>
+                    <input type="text" id="incident-type" style="width: 300px; display: inline-block" v-model="new_incident_type"> <br>
 
                     <label for="police-grid" style="display: inline-block">Police Grid:</label> &nbsp;
-                    <input type="text" id="police-grid" style="width: 300px; display: inline-block"> <br>
+                    <input type="text" id="police-grid" style="width: 300px; display: inline-block" v-model="new_incident_grid"> <br>
 
                     <label for="neighborhood-id" style="display: inline-block">Neighborhood ID:</label> &nbsp;
-                    <input type="text" id="neighborhood-id" style="width: 300px; display: inline-block"> <br>
+                    <input type="text" id="neighborhood-id" style="width: 300px; display: inline-block" v-model="new_incident_neigh_id"> <br>
 
                     <label for="block" style="display: inline-block">Block:</label> &nbsp;
-                    <input type="text" id="block" style="width: 300px; display: inline-block"> <br>
+                    <input type="text" id="block" style="width: 300px; display: inline-block" v-model="new_incident_block"> <br>
 
 
 
@@ -609,7 +660,7 @@ export default {
                     <!-- photo and short bio-->
                     <!-- This can be on the API and we get using a request url -->
                     <!-- <img src="images/" alt="Sam" style="width: 250px"> -->
-                    <p>sdojghbnsdjlgbljsdbglsdjgbsdljgblj.</p>
+                    <p>My name is Sam McEnery, I am a computer science major here at St. Thomas. I am originally from Geneva, Illinois-a Suburb</p>
                 </div>
 
                 <!-- maybe add some horizontal lines to separate the sections??-->

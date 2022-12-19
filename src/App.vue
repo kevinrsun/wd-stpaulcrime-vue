@@ -14,9 +14,9 @@ export default {
             filterDates: [],
             filterTimes: [],
             filterMaxIncidents: 1000,
-            selectIncidentAddress: '',
-            selectIncidentLat: '',
-            selectIncidentLong: '',
+            selectIncidentAddress: "",
+            selectIncidentLat: "",
+            selectIncidentLong: "",
             leaflet: {
                 map: null,
                 center: {
@@ -203,14 +203,10 @@ export default {
                     }
                 }
             }
-            if (this.filterMaxIncidents !== 1000) { //check for max incident filter, 1000 by default
-                console.log(this.filterMaxIncidents[0])
-                if (query !== "") {
-                    query = query + "&limit=" + this.filterMaxIncidents;
-                } else {
-                    query = query + "?limit=" + this.filterMaxIncidents;
-                }
-
+            if (query !== "") {
+                query = query + "&limit=" + this.filterMaxIncidents;
+            } else {
+                query = query + "?limit=" + this.filterMaxIncidents;
             }
 
             incidentReq = incidentReq + query;
@@ -247,20 +243,54 @@ export default {
         },
 
         newLocation(data) {
-            //Take the address or lat/long and update the map for new location...
-            let getAddress = "https://nominatim.openstreetmap.org/reverse?lat=<value>&lon=<value>&<params>";
+            let query = "";
 
+            if(this.selectIncidentAddress !== "") {
+                query = "https://nominatim.openstreetmap.org/search?q=" + this.selectIncidentAddress + "&format=json";
+            } else {
+                if(this.selectIncidentLat > this.leaflet.bounds.nw.lat) {
+                    this.selectIncidentLat = this.leaflet.bounds.nw.lat;
+                    alert("Latitude value is out of bounds. Set to max possible value.");
+                }
+                if(this.selectIncidentLat < this.leaflet.bounds.se.lat) {
+                    this.selectIncidentLat = this.leaflet.bounds.se.lat;
+                    alert("Latitude value is out of bounds. Set to min possible value.");
+                }
+                if(this.selectIncidentLong > this.leaflet.bounds.se.lng) {
+                    this.selectIncidentLong = this.leaflet.bounds.se.lng;
+                    alert("Longitude value is out of bounds. Set to max possible value.");
+                }
+                if(this.selectIncidentLong < this.leaflet.bounds.nw.lng) {
+                    this.selectIncidentLong = this.leaflet.bounds.nw.lng;
+                    alert("Longitude value is out of bounds. Set to min possible value.");
+                }
 
-            if (this.leaflet.center.address !== '') {
-
-            } else if (this.leaflet.center.lat !== '' && this.leaflet.center.long !== '') {
-
+                query = "https://nominatim.openstreetmap.org/reverse?lat=" + this.selectIncidentLat + "&lon=" + this.selectIncidentLong + "&format=json";
             }
 
+            this.getJSON(query)
+            .then((data) => {
+                console.log(data);
+                this.updatedLocation(data);
+            })
+            .then((err) => {
+                console.log(err);
+            });
+        },
+
+        updatedLocation(data) {
+            this.leaflet.center.lat = data.lat;
+            this.leaflet.center.lng = data.lon;
+            this.leaflet.map.flyTo([this.leaflet.center.lat, this.leaflet.center.lng], 17); // "this.leaflet.map.panTo" also works
+        },
+
+        mapPanning() {
+            this.leaflet.center.lat = data.lat;
+            this.leaflet.center.lng = data.lon;
         },
 
         newIncident(data) {
-            //put together the data for the new incident then pass to uploadJSON??? 
+            //put together the data for the new incident then pass to uploadJSON???
 
             //Check if any of the inputs are null/empty before making the PUT request
 
@@ -338,6 +368,13 @@ export default {
         }).catch((error) => {
             console.log('Error:', error);
         });
+
+        // Initial coords on mount
+        this.selectIncidentLat = this.leaflet.center.lat;
+        this.selectIncidentLong = this.leaflet.center.lng;
+
+        // Map events
+        this.leaflet.map.on('dragend', this.mapPanning)
     }
 }
 </script>

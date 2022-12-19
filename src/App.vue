@@ -230,6 +230,56 @@ export default {
                     this.codes = data[1];
                     this.neighborhoods = data[2];
 
+                    if (true) { //if true to always check
+                        let bounds = this.leaflet.map.getBounds();
+                        let screenNW = bounds.getNorthWest(); //lat-max, long-max
+                        let screenSE = bounds.getSouthEast(); //lat-min, long-min
+                        let screenHoods = []; //contains hoods within map coords.
+                        console.log(screenNW);
+                        console.log(screenSE);
+                        for (let i = 0; i < this.neighborhoods.length; i++) {
+                            if(screenNW.lat > this.leaflet.neighborhood_markers[i].location[1]){ //check max lat
+                                if(screenSE.lat < this.leaflet.neighborhood_markers[i].location[1]){ //check min lat
+                                    if(screenNW.lng > this.leaflet.neighborhood_markers[i].location[2]){ //check max long
+                                        if(screenSE.lng < this.leaflet.neighborhood_markers[i].location[2]){ //check min long
+                                            screenHoods.push(this.neighborhoods[i].id)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        console.log(screenHoods);
+                        let greenIcon = new L.icon({
+                            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41],
+                            popupAnchor: [1, -34],
+                            shadowSize: [41, 41]
+                        });
+                        //loop and get incidents in visible hoods
+                        for(let i = 0; i < this.incidents.length; i++){
+                            if(screenHoods.includes(this.incidents[i].neighborhood_number)){ //if incident in visible hood
+                                let addy = this.incidents[i].block.toString();
+                                let parseAddyNum = addy.split(" ", 1);
+                                let addyNumber = parseAddyNum[0].replaceAll('X', 0);
+                                let addr = addy.substring(addy.indexOf(' ') + 1);
+                                let fullAddy = 'https://nominatim.openstreetmap.org/search?q=' + addyNumber + ' ' + addr + ', St. Paul MN' + '&format=json';
+                                this.getJSON(fullAddy)
+                                    .then((data) => {
+                                        console.log(data);
+                                        let markerPin = new L.Marker(new L.LatLng(this.data[0].lat, this.data[0].lng), { icon: greenIcon });
+                                        let markerPopup = L.popup().setContent('<p>Incident: ' + this.incidents[i].code + '</p>\n' + '<p>Date: ' + this.incidents[i].date + '</p>\n' + '<p>Time: ' + this.incidents[i].time + '<p>');
+                                        markerPin.bindPopup(markerPopup); //.openPopup();
+                                        this.leaflet.map.addLayer(markerPin);
+                                    })
+                                    .then((err) => {
+                                        console.log(err);
+                                    });
+                            }
+                        }
+                    }
+
                     // Update incidents to use neighborhood_name rather than neighborhood_number, and incident_type rather than code
                     this.incidents.map((incident) => {
                         // Add field to incident for crime category
@@ -420,179 +470,179 @@ export default {
         neighborhoodMarkers() {
             let incidentReq = "http://localhost:8000/incidents";
             this.getJSON(incidentReq)
-            .then((data) => {
-                console.log(data);
-                let hood1 = 0;
-                let hood2 = 0;
-                let hood3 = 0;
-                let hood4 = 0;
-                let hood5 = 0;
-                let hood6 = 0;
-                let hood7 = 0;
-                let hood8 = 0;
-                let hood9 = 0;
-                let hood10 = 0;
-                let hood11 = 0;
-                let hood12 = 0;
-                let hood13 = 0;
-                let hood14 = 0;
-                let hood15 = 0;
-                let hood16 = 0;
-                let hood17 = 0;
-                let greenIcon = new L.icon({
-                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                    iconSize: [25, 41],
-                    iconAnchor: [12, 41],
-                    popupAnchor: [1, -34],
-                    shadowSize: [41, 41]
+                .then((data) => {
+                    console.log(data);
+                    let hood1 = 0;
+                    let hood2 = 0;
+                    let hood3 = 0;
+                    let hood4 = 0;
+                    let hood5 = 0;
+                    let hood6 = 0;
+                    let hood7 = 0;
+                    let hood8 = 0;
+                    let hood9 = 0;
+                    let hood10 = 0;
+                    let hood11 = 0;
+                    let hood12 = 0;
+                    let hood13 = 0;
+                    let hood14 = 0;
+                    let hood15 = 0;
+                    let hood16 = 0;
+                    let hood17 = 0;
+                    let greenIcon = new L.icon({
+                        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        popupAnchor: [1, -34],
+                        shadowSize: [41, 41]
+                    });
+                    for (let j = 0; j < data.length; j++) { //set neighborhood incident totals
+                        if (data[j].neighborhood_number === 1) {
+                            hood1++;
+                        } else if (data[j].neighborhood_number === 2) {
+                            hood2++;
+                        } else if (data[j].neighborhood_number === 3) {
+                            hood3++;
+                        } else if (data[j].neighborhood_number === 4) {
+                            hood4++;
+                        } else if (data[j].neighborhood_number === 5) {
+                            hood5++;
+                        } else if (data[j].neighborhood_number === 6) {
+                            hood6++;
+                        } else if (data[j].neighborhood_number === 7) {
+                            hood7++;
+                        } else if (data[j].neighborhood_number === 8) {
+                            hood8++;
+                        } else if (data[j].neighborhood_number === 9) {
+                            hood9++;
+                        } else if (data[j].neighborhood_number === 10) {
+                            hood10++;
+                        } else if (data[j].neighborhood_number === 11) {
+                            hood11++;
+                        } else if (data[j].neighborhood_number === 12) {
+                            hood12++;
+                        } else if (data[j].neighborhood_number === 13) {
+                            hood13++;
+                        } else if (data[j].neighborhood_number === 14) {
+                            hood14++;
+                        } else if (data[j].neighborhood_number === 15) {
+                            hood15++;
+                        } else if (data[j].neighborhood_number === 16) {
+                            hood16++;
+                        } else if (data[j].neighborhood_number === 17) {
+                            hood17++;
+                        }
+                    }
+                    for (let i = 0; i < this.leaflet.neighborhood_markers.length; i++) {  //loop thru the neighborhood markers
+                        if (i === 0) {
+                            let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                            let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood1 + '</p>');
+                            markerPin.bindPopup(markerPopup).openPopup();
+                            this.leaflet.neighborhood_markers[i].marker = markerPin;
+                            this.leaflet.map.addLayer(markerPin);
+                        } else if (i === 1) {
+                            let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                            let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood2 + '</p>');
+                            markerPin.bindPopup(markerPopup).openPopup();
+                            this.leaflet.neighborhood_markers[i].marker = markerPin;
+                            this.leaflet.map.addLayer(markerPin);
+                        } else if (i === 2) {
+                            let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                            let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood3 + '</p>');
+                            markerPin.bindPopup(markerPopup).openPopup();
+                            this.leaflet.neighborhood_markers[i].marker = markerPin;
+                            this.leaflet.map.addLayer(markerPin);
+                        } else if (i === 3) {
+                            let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                            let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood4 + '</p>');
+                            markerPin.bindPopup(markerPopup).openPopup();
+                            this.leaflet.neighborhood_markers[i].marker = markerPin;
+                            this.leaflet.map.addLayer(markerPin);
+                        } else if (i === 4) {
+                            let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                            let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood5 + '</p>');
+                            markerPin.bindPopup(markerPopup).openPopup();
+                            this.leaflet.neighborhood_markers[i].marker = markerPin;
+                            this.leaflet.map.addLayer(markerPin);
+                        } else if (i === 5) {
+                            let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                            let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood6 + '</p>');
+                            markerPin.bindPopup(markerPopup).openPopup();
+                            this.leaflet.neighborhood_markers[i].marker = markerPin;
+                            this.leaflet.map.addLayer(markerPin);
+                        } else if (i === 6) {
+                            let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                            let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood7 + '</p>');
+                            markerPin.bindPopup(markerPopup).openPopup();
+                            this.leaflet.neighborhood_markers[i].marker = markerPin;
+                            this.leaflet.map.addLayer(markerPin);
+                        } else if (i === 7) {
+                            let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                            let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood8 + '</p>');
+                            markerPin.bindPopup(markerPopup).openPopup();
+                            this.leaflet.neighborhood_markers[i].marker = markerPin;
+                            this.leaflet.map.addLayer(markerPin);
+                        } else if (i === 8) {
+                            let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                            let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood9 + '</p>');
+                            markerPin.bindPopup(markerPopup).openPopup();
+                            this.leaflet.neighborhood_markers[i].marker = markerPin;
+                            this.leaflet.map.addLayer(markerPin);
+                        } else if (i === 9) {
+                            let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                            let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood10 + '</p>');
+                            markerPin.bindPopup(markerPopup).openPopup();
+                            this.leaflet.neighborhood_markers[i].marker = markerPin;
+                            this.leaflet.map.addLayer(markerPin);
+                        } else if (i === 10) {
+                            let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                            let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood11 + '</p>');
+                            markerPin.bindPopup(markerPopup).openPopup();
+                            this.leaflet.neighborhood_markers[i].marker = markerPin;
+                            this.leaflet.map.addLayer(markerPin);
+                        } else if (i === 11) {
+                            let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                            let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood12 + '</p>');
+                            markerPin.bindPopup(markerPopup).openPopup();
+                            this.leaflet.neighborhood_markers[i].marker = markerPin;
+                            this.leaflet.map.addLayer(markerPin);
+                        } else if (i === 12) {
+                            let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                            let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood13 + '</p>');
+                            markerPin.bindPopup(markerPopup).openPopup();
+                            this.leaflet.neighborhood_markers[i].marker = markerPin;
+                            this.leaflet.map.addLayer(markerPin);
+                        } else if (i === 13) {
+                            let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                            let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood14 + '</p>');
+                            markerPin.bindPopup(markerPopup).openPopup();
+                            this.leaflet.neighborhood_markers[i].marker = markerPin;
+                            this.leaflet.map.addLayer(markerPin);
+                        } else if (i === 14) {
+                            let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                            let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood15 + '</p>');
+                            markerPin.bindPopup(markerPopup).openPopup();
+                            this.leaflet.neighborhood_markers[i].marker = markerPin;
+                            this.leaflet.map.addLayer(markerPin);
+                        } else if (i === 15) {
+                            let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                            let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood16 + '</p>');
+                            markerPin.bindPopup(markerPopup).openPopup();
+                            this.leaflet.neighborhood_markers[i].marker = markerPin;
+                            this.leaflet.map.addLayer(markerPin);
+                        } else if (i === 16) {
+                            let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
+                            let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood17 + '</p>');
+                            markerPin.bindPopup(markerPopup).openPopup();
+                            this.leaflet.neighborhood_markers[i].marker = markerPin;
+                            this.leaflet.map.addLayer(markerPin);
+                        }
+                    }
+                })
+                .then((err) => {
+                    console.log(err);
                 });
-                for (let j = 0; j < data.length; j++) { //set neighborhood incident totals
-                    if (data[j].neighborhood_number === 1) {
-                        hood1++;
-                    } else if (data[j].neighborhood_number === 2) {
-                        hood2++;
-                    } else if (data[j].neighborhood_number === 3) {
-                        hood3++;
-                    } else if (data[j].neighborhood_number === 4) {
-                        hood4++;
-                    } else if (data[j].neighborhood_number === 5) {
-                        hood5++;
-                    } else if (data[j].neighborhood_number === 6) {
-                        hood6++;
-                    } else if (data[j].neighborhood_number === 7) {
-                        hood7++;
-                    } else if (data[j].neighborhood_number === 8) {
-                        hood8++;
-                    } else if (data[j].neighborhood_number === 9) {
-                        hood9++;
-                    } else if (data[j].neighborhood_number === 10) {
-                        hood10++;
-                    } else if (data[j].neighborhood_number === 11) {
-                        hood11++;
-                    } else if (data[j].neighborhood_number === 12) {
-                        hood12++;
-                    } else if (data[j].neighborhood_number === 13) {
-                        hood13++;
-                    } else if (data[j].neighborhood_number === 14) {
-                        hood14++;
-                    } else if (data[j].neighborhood_number === 15) {
-                        hood15++;
-                    } else if (data[j].neighborhood_number === 16) {
-                        hood16++;
-                    } else if (data[j].neighborhood_number === 17) {
-                        hood17++;
-                    }
-                }
-                for (let i = 0; i < this.leaflet.neighborhood_markers.length; i++) {  //loop thru the neighborhood markers
-                    if (i === 0) {
-                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
-                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood1 + '</p>');
-                        markerPin.bindPopup(markerPopup).openPopup();
-                        this.leaflet.neighborhood_markers[i].marker = markerPin;
-                        this.leaflet.map.addLayer(markerPin);
-                    } else if (i === 1) {
-                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
-                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood2 + '</p>');
-                        markerPin.bindPopup(markerPopup).openPopup();
-                        this.leaflet.neighborhood_markers[i].marker = markerPin;
-                        this.leaflet.map.addLayer(markerPin);
-                    } else if (i === 2) {
-                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
-                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood3 + '</p>');
-                        markerPin.bindPopup(markerPopup).openPopup();
-                        this.leaflet.neighborhood_markers[i].marker = markerPin;
-                        this.leaflet.map.addLayer(markerPin);
-                    } else if (i === 3) {
-                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
-                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood4 + '</p>');
-                        markerPin.bindPopup(markerPopup).openPopup();
-                        this.leaflet.neighborhood_markers[i].marker = markerPin;
-                        this.leaflet.map.addLayer(markerPin);
-                    } else if (i === 4) {
-                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
-                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood5 + '</p>');
-                        markerPin.bindPopup(markerPopup).openPopup();
-                        this.leaflet.neighborhood_markers[i].marker = markerPin;
-                        this.leaflet.map.addLayer(markerPin);
-                    } else if (i === 5) {
-                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
-                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood6 + '</p>');
-                        markerPin.bindPopup(markerPopup).openPopup();
-                        this.leaflet.neighborhood_markers[i].marker = markerPin;
-                        this.leaflet.map.addLayer(markerPin);
-                    } else if (i === 6) {
-                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
-                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood7 + '</p>');
-                        markerPin.bindPopup(markerPopup).openPopup();
-                        this.leaflet.neighborhood_markers[i].marker = markerPin;
-                        this.leaflet.map.addLayer(markerPin);
-                    } else if (i === 7) {
-                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
-                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood8 + '</p>');
-                        markerPin.bindPopup(markerPopup).openPopup();
-                        this.leaflet.neighborhood_markers[i].marker = markerPin;
-                        this.leaflet.map.addLayer(markerPin);
-                    } else if (i === 8) {
-                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
-                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood9 + '</p>');
-                        markerPin.bindPopup(markerPopup).openPopup();
-                        this.leaflet.neighborhood_markers[i].marker = markerPin;
-                        this.leaflet.map.addLayer(markerPin);
-                    } else if (i === 9) {
-                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
-                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood10 + '</p>');
-                        markerPin.bindPopup(markerPopup).openPopup();
-                        this.leaflet.neighborhood_markers[i].marker = markerPin;
-                        this.leaflet.map.addLayer(markerPin);
-                    } else if (i === 10) {
-                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
-                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood11 + '</p>');
-                        markerPin.bindPopup(markerPopup).openPopup();
-                        this.leaflet.neighborhood_markers[i].marker = markerPin;
-                        this.leaflet.map.addLayer(markerPin);
-                    } else if (i === 11) {
-                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
-                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood12 + '</p>');
-                        markerPin.bindPopup(markerPopup).openPopup();
-                        this.leaflet.neighborhood_markers[i].marker = markerPin;
-                        this.leaflet.map.addLayer(markerPin);
-                    } else if (i === 12) {
-                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
-                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood13 + '</p>');
-                        markerPin.bindPopup(markerPopup).openPopup();
-                        this.leaflet.neighborhood_markers[i].marker = markerPin;
-                        this.leaflet.map.addLayer(markerPin);
-                    } else if (i === 13) {
-                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
-                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood14 + '</p>');
-                        markerPin.bindPopup(markerPopup).openPopup();
-                        this.leaflet.neighborhood_markers[i].marker = markerPin;
-                        this.leaflet.map.addLayer(markerPin);
-                    } else if (i === 14) {
-                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
-                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood15 + '</p>');
-                        markerPin.bindPopup(markerPopup).openPopup();
-                        this.leaflet.neighborhood_markers[i].marker = markerPin;
-                        this.leaflet.map.addLayer(markerPin);
-                    } else if (i === 15) {
-                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
-                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood16 + '</p>');
-                        markerPin.bindPopup(markerPopup).openPopup();
-                        this.leaflet.neighborhood_markers[i].marker = markerPin;
-                        this.leaflet.map.addLayer(markerPin);
-                    } else if (i === 16) {
-                        let markerPin = new L.Marker(new L.LatLng(this.leaflet.neighborhood_markers[i].location[0], this.leaflet.neighborhood_markers[i].location[1]), { icon: greenIcon });
-                        let markerPopup = L.popup().setContent('<p>Total Incidents: ' + hood17 + '</p>');
-                        markerPin.bindPopup(markerPopup).openPopup();
-                        this.leaflet.neighborhood_markers[i].marker = markerPin;
-                        this.leaflet.map.addLayer(markerPin);
-                    }
-                }
-            })
-            .then((err) => {
-                console.log(err);
-            });
         }
     },
 

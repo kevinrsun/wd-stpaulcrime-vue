@@ -303,7 +303,7 @@ export default {
 
         newIncident() {
             //put together the data for the new incident then pass to uploadJSON???
-
+            
             //Check if any of the inputs are null/empty before making the PUT request
             let incidentReq = "http://localhost:8000/new-incident";
             let method = 'PUT';
@@ -580,8 +580,8 @@ export default {
 
                 <br><br><br><br>
 
-                <CrimesResult :result_array="incidents" :selectButtonClicked="selectButtonClicked" :deleteButtonClicked="deleteButtonClicked"/>
-
+                <CrimesResult :result_array="incidents" :code_types="codesTypes" :selectButtonClicked="selectButtonClicked" :deleteButtonClicked="deleteButtonClicked"/>
+                
                 <br><br>
             </div>
         </div>
@@ -672,12 +672,18 @@ export default {
                     <!-- photo and short bio-->
                     <!-- This can be on the API and we get using a request url -->
                     <!-- <img src="images/" alt="Sam" style="width: 250px"> -->
-                    <p>My name is Sam McEnery, I am a computer science major here at St. Thomas. I am originally from Geneva, Illinois-a Suburb</p>
+                    <p>My name is Sam McEnery, I am a computer science major here at St. Thomas. I am originally from Geneva, Illinois--a Suburb of Chicago.  I've played Hockey all my life so I enjoy playing pond hockey when the weather gets cold enough.</p>
                 </div>
 
                 <!-- maybe add some horizontal lines to separate the sections??-->
 
                 <h1 class="cell large-12" style="font-size: 40px">Description of tools:</h1>
+                <ol>
+                    <li>In the Map section there are many tools we can use.  First, we can look up crime by address, this is done by typing in the specified address into the search bar.  Next, we can also find crimes by latitude and longitude through the same process.  These search results can be filtered by checking the boxes of the specified crime type, neighborhood, or date and time in which it occurred.</li>
+                    <li>Once a search is requested, the table populates with all the crimes with the specified parameters with colors coordinating the violence of each crime.</li>
+                    <li>In the New Incident section, this is where the user would go to input a new crime into the database.  All parameters must be met in order to succesfully do this.</li>
+                </ol>
+                
                 <div class="cell large-12">
 
                 </div>
@@ -691,8 +697,12 @@ export default {
 
                 <h1 class="cell large-12" style="font-size: 40px">Six interesting findings:</h1>
                 <ol>
-                    <li>I learned everything</li>
-                    <li>I learned nothing</li>
+                    <li>Making a PUT form through user input correctly was very fascinating to learn.</li>
+                    <li>Using longitude and latitude to traverse the program through a map.</li>
+                    <li>Using v-model in order to bind data to an object from the website.</li>
+                    <li>Learning about the quantity of different crimes happening in St. Paul.</li>
+                    <li>Finding out how law enforcement organizes each crime in a database.</li>
+                    <li>Learning how to apply colors to table rows conditionally through html.</li>
                 </ol>
 
                 <div class="cell large-12">

@@ -2,6 +2,7 @@
 export default {
     props: {
         result_array: Array,
+        code_types: Array,
         selectButtonClicked: Function,
         deleteButtonClicked: Function
     },
@@ -42,7 +43,7 @@ export default {
 
                 <!-- table data for the Code -->
                 <td>{{ incident.code }}</td>
-
+                    
                 <!-- table data for the police grid -->
                 <td>{{ incident.police_grid }}</td>
 
@@ -64,5 +65,15 @@ export default {
 <!-- include our table styling options here... -->
 <!-- Style the background color of rows in the table to categorize crimes as "violent crimes" (crimes against another person), "property crimes" (crimes against a person's or business' property), or "other crimes" (anything else) -->
 <style>
-
+    /*<!-- homicide, assault, rape -->*/
+    .homicide {
+        background-color: rgb(126, 20, 10); 
+    }   
+    .assault {
+        background-color: rgb(126, 20, 10);
+    }
+    .rape{
+        background-color: rgb(126, 20, 10);
+    }
+    
 </style>

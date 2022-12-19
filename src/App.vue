@@ -939,10 +939,7 @@ export default {
 
 
                 <h1 class="cell large-12" id="title2" style="font-size: 40px">Video of the application:</h1>
-                <video width="1150" height="647" controls>
-                <source src="../images/Project 4 Video.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-                </video>
+                <iframe width="1150" height="647" src="https://www.youtube.com/embed/rk7GJSKw6io?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 <div class="cell large-12">
 
                 </div>

@@ -939,7 +939,7 @@ export default {
 
 
                 <h1 class="cell large-12" id="title2" style="font-size: 40px">Video of the application:</h1>
-                <iframe width="1150" height="647" src="https://www.youtube.com/embed/rk7GJSKw6io?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe width="1150" height="647" src="https://www.youtube.com/embed/ZgktA1Wn71E?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 <div class="cell large-12">
 
                 </div>
